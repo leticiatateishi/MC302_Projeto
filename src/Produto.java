@@ -7,7 +7,8 @@ public enum Produto {
 
     TRENTO(1.25, 16),
     PACOCA(0.25, 50),
-    PIRULITO(0.25, 60);
+    PIRULITO(0.25, 60),
+    AMENDOIM(0.5, 50);
 
     private final double preco;
     private final int quantidadePorCaixa;

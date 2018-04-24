@@ -19,11 +19,31 @@ public class Compra extends Transacao {
 
     @Override
     public double getValor() {
-        return 0;
+        double valor = 0.0;
+        for (QuantidadeProduto qp: produtos){
+            valor += qp.getProduto().getPreco() * qp.getQuantidade();
+        }
+        return valor;
     }
 
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    public boolean adicionarProduto(Produto produto, int quantidade){
+        if (produtos.add(new QuantidadeProduto(produto, quantidade)))
+            return true;
+        return false;
+    }
+
+    public boolean removerProduto(Produto produto, int quantidade){
+        for (QuantidadeProduto qp: produtos){
+            if (qp.getProduto().equals(produto) && qp.getQuantidade() >= quantidade){
+                qp.setQuantidade(qp.getQuantidade()-quantidade);
+                return true;
+            }
+        }
+        return false;
     }
 }
