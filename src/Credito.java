@@ -10,4 +10,9 @@ public class Credito extends Transacao {
     public double getValor(){
         return valor;
     }
+
+    @Override
+    public String toString() {
+        return "Credito de R$" + valor + " para " + getUsuario() + "\n" + "Novo Saldo: " + getUsuario().getSaldo() +"\n";
+    }
 }
