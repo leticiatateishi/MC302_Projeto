@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="422.1666666666667" y="475.0">QuantidadeProduto</node>
+    <node x="18.200000000000045" y="0.0">Usuario</node>
+    <node x="503.2291666666667" y="664.0">QuantidadeCaixa</node>
+    <node x="50.81916666666672" y="488.5">Transacao</node>
+    <node x="153.0" y="637.0">Compra</node>
+    <node x="0.0" y="664.0">Credito</node>
+    <node x="362.0341666666667" y="104.0">Produto</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="Compra" target="QuantidadeProduto">
+      <point x="65.60000000000002" y="-56.5" />
+      <point x="382.6" y="607.0" />
+      <point x="443.9166666666667" y="607.0" />
+      <point x="-65.25" y="56.0" />
+    </edge>
+    <edge source="Produto" target="QuantidadeProduto">
+      <point x="42.375" y="108.5" />
+      <point x="573.9091666666667" y="450.0" />
+      <point x="567.1666666666667" y="450.0" />
+      <point x="58.0" y="-56.0" />
+    </edge>
+    <edge source="QuantidadeCaixa" target="Produto">
+      <point x="51.66666666666663" y="-29.5" />
+      <point x="632.3958333333333" y="617.0" />
+      <point x="620.6108333333334" y="617.0" />
+      <point x="620.6108333333334" y="450.0" />
+      <point x="658.6591666666667" y="450.0" />
+      <point x="127.125" y="108.5" />
+    </edge>
+    <edge source="Compra" target="Transacao">
+      <point x="-131.2" y="-56.5" />
+      <point x="185.8" y="617.0" />
+      <point x="145.81916666666672" y="617.0" />
+      <point x="19.0" y="42.5" />
+    </edge>
+    <edge source="Transacao" target="Usuario">
+      <point x="-50.66666666666663" y="-42.5" />
+      <point x="76.15250000000009" y="450.0" />
+      <point x="101.90000000000003" y="450.0" />
+      <point x="-55.80000000000001" y="212.5" />
+    </edge>
+    <edge source="Credito" target="Usuario">
+      <point x="-44.33333333333337" y="-29.5" />
+      <point x="22.16666666666663" y="617.0" />
+      <point x="29.583333333333314" y="617.0" />
+      <point x="29.583333333333314" y="450.0" />
+      <point x="46.10000000000002" y="450.0" />
+      <point x="-111.60000000000002" y="212.5" />
+    </edge>
+    <edge source="QuantidadeProduto" target="Produto">
+      <point x="-58.0" y="-56.0" />
+      <point x="451.1666666666667" y="450.0" />
+      <point x="404.4091666666667" y="450.0" />
+      <point x="-127.125" y="108.5" />
+    </edge>
+    <edge source="QuantidadeCaixa" target="QuantidadeProduto">
+      <point x="0.0" y="-29.5" />
+      <point x="580.7291666666667" y="617.0" />
+      <point x="574.4166666666667" y="617.0" />
+      <point x="65.25" y="56.0" />
+    </edge>
+    <edge source="Usuario" target="Transacao">
+      <point x="55.80000000000007" y="212.5" />
+      <point x="213.5000000000001" y="450.0" />
+      <point x="177.48583333333335" y="450.0" />
+      <point x="50.66666666666663" y="-42.5" />
+    </edge>
+    <edge source="Credito" target="Transacao">
+      <point x="0.0" y="-29.5" />
+      <point x="66.5" y="617.0" />
+      <point x="69.81916666666672" y="617.0" />
+      <point x="-57.0" y="42.5" />
+    </edge>
+    <edge source="Compra" target="Usuario">
+      <point x="0.0" y="-56.5" />
+      <point x="317.0" y="617.0" />
+      <point x="305.5283333333334" y="617.0" />
+      <point x="305.5283333333334" y="450.0" />
+      <point x="269.30000000000007" y="450.0" />
+      <point x="111.60000000000002" y="212.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="358.5" y="229.5" />
+  <SelectedNodes>
+    <node>Credito</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

@@ -10,7 +10,7 @@ public abstract class Transacao {
      * Permite a relação bidirecional com a transação.
      */
     private final Usuario usuario;
-    /**
+    /*
      * Utilizando new Date() para receber a data atual (número de milisegundos desde 1 de janeiro de 1970).
      */
     private final Date data;

@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * Classe que guarda as informações do usuário. A ideia é conseguir determinar o saldo do usuário através da soma de
@@ -85,6 +84,8 @@ public class Usuario {
         this.ra = ra;
         this.pin = pin;
         this.email = email;
+        /* Adicionamos o usuário à lista de usuários */
+        usuarios.add(this);
     }
 
     /**
@@ -92,18 +93,42 @@ public class Usuario {
      * maneira que o usuário consiga criar uma nova senha a partir do e-mail.
      */
     public void pedirTrocaSenha() {
+
+        Random randomNumbers = new Random(System.nanoTime());
+        Scanner sc = new Scanner(System.in);
+
+        esqueciSenha = Integer.toString(randomNumbers.nextInt());
+
+        //Mandar o codigo no email
+
+        System.out.println("Insira o codigo recebido no email:");
+        int tentativas = 0;
+        while (!alterarSenha(sc.next()) && ++tentativas < 3) {
+            System.out.println("Codigo errado, tente de novo:");
+        }
+        if (tentativas == 3) {
+            System.out.println("Limite de tentativas excedido!");
+        }
     }
+
 
     /**
      * Alteramos a senha do usuário caso o código seja idêntico ao esqueciSenha.
      *
      * @param codigo código enviado ao usuário para permitir a alteração de senha sem saber a senha atual.
-     * @param nova   senha nova (devemos conefrir antes de chamar esse método se a senha
+     *               //@param nova   senha nova (devemos conefrir antes de chamar esse método se a senha
      * @return true no caso em que a senha foi alterada com sucesso. False no caso em que o código esteja incorreto ou
      * que o novo PIN seja inválido.
      */
-    public boolean alterarSenha(String codigo, int nova) {
-        return false;
+    public boolean alterarSenha(String codigo) {
+
+        Scanner sc = new Scanner(System.in);
+
+        if (Objects.equals(codigo, esqueciSenha)) {
+            System.out.println("Insira nova senha:");
+            pin = sc.nextInt();
+            return true;
+        } else return false;
     }
 
     /**
@@ -115,6 +140,10 @@ public class Usuario {
      * inválido ou a variável antiga não coincide com a senha atual.
      */
     public boolean alterarSenha(int antiga, int nova) {
+        if (antiga == pin) {
+            pin = nova;
+            return true;
+        }
         return false;
     }
 
@@ -126,10 +155,19 @@ public class Usuario {
      * @param valor quantidade em reais a ser depositada
      */
     public void creditar(double valor) {
+        Transacao transacao = new Credito(this, new Date(), valor);
+        saldo += valor;
+        /* Adicionamos a transação à lista de transações do usuário */
     }
 
-    public static HashSet<Usuario> getUsuarios() {
-        return usuarios;
+    /*
+     * Podemos decidir se devemos criar Compra novamente (herdeira de TransacaoEstoque) só pra ficar mais explícito o
+     * que é compra e o que não é.
+     */
+    public TransacaoEstoque fazerCompra() {
+        TransacaoEstoque transacaoEstoque = new TransacaoEstoque(this, new Date(), TransacaoEstoque.Tipo.COMPRA);
+        /* Adicionamos a transação à lista de transações do usuário */
+        return transacaoEstoque;
     }
 
     /**
@@ -173,6 +211,14 @@ public class Usuario {
 
     @Override
     public String toString() {
-        return super.toString();
+        return "R.A.: " + ra + ", e-mail: " + email + "\n";
+    }
+
+    /**
+     * @return conjunto não modificável de usuários
+     * @see Collections#unmodifiableSet(Set) conjunto não modificável
+     */
+    public static Set<Usuario> getUsuarios() {
+        return Collections.unmodifiableSet(usuarios);
     }
 }
