@@ -17,16 +17,19 @@
  */
 public class QuantidadeProduto {
 
+    private final TransacaoEstoque transacaoEstoque;
     private Produto produto;
     private int quantidade;
 
     /**
      * Cria uma instância de "delta quantidade"
      *
-     * @param produto    produto a ser comprado/adicionado ao estoque
-     * @param quantidade quantidade de produto, a razão principal por essa classe existir como intermediária
+     * @param transacaoEstoque transação referente à essa mudança de quantidade de produtos.
+     * @param produto          produto a ser comprado/adicionado ao estoque
+     * @param quantidade       quantidade de produto, a razão principal por essa classe existir como intermediária
      */
-    public QuantidadeProduto(Produto produto, int quantidade) {
+    public QuantidadeProduto(TransacaoEstoque transacaoEstoque, Produto produto, int quantidade) {
+        this.transacaoEstoque = transacaoEstoque;
         this.produto = produto;
         this.quantidade = quantidade;
     }
@@ -37,6 +40,10 @@ public class QuantidadeProduto {
 
     public void setProduto(Produto produto) {
         this.produto = produto;
+    }
+
+    public TransacaoEstoque getTransacaoEstoque() {
+        return transacaoEstoque;
     }
 
     public int getQuantidade() {

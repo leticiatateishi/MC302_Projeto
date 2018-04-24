@@ -20,7 +20,7 @@ public enum Produto {
      * Para isso, podemos também formar uma espécie de "Compra" para "Reposição", como uma classe que extende uma
      * Transacao, algo como "TransacaoEstoque" e não apenas uma transação monetária.
      */
-    private final ArrayList<QuantidadeProduto> transacoes = new ArrayList<>();
+    private static final ArrayList<TransacaoEstoque> transacoes = new ArrayList<>();
 
     Produto(double preco, int quantidadePorCaixa) {
         this.preco = preco;
@@ -38,5 +38,13 @@ public enum Produto {
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    /**
+     * Método que deve ser usado apenas por TransacaoEstoque para adicionar à
+     * @param transacaoEstoque
+     */
+    protected static void adicionarTransacao(TransacaoEstoque transacaoEstoque) {
+        transacoes.add(transacaoEstoque);
     }
 }

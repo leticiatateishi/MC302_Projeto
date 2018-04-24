@@ -9,8 +9,8 @@ public class QuantidadeCaixa extends QuantidadeProduto {
      * @param produto    produto a ser comprado/adicionado ao estoque
      * @param quantidade quantidade de produto, a razão principal por essa classe existir como intermediária
      */
-    public QuantidadeCaixa(Produto produto, int quantidade) {
-        super(produto, quantidade);
+    public QuantidadeCaixa(TransacaoEstoque transacaoEstoque, Produto produto, int quantidade) {
+        super(transacaoEstoque, produto, quantidade);
     }
 
     @Override
