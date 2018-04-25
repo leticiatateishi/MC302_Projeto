@@ -1,5 +1,7 @@
 import java.util.Date;
 import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Classe intermediária entre Transacao e Produtos, permitindo uma relação bidirecional entre usuário e produtos.
@@ -8,7 +10,7 @@ import java.util.EnumMap;
  * Essa classe dispensa QuantidadeProdutos, já que não temos uma relação muito complexa para precisar de mais de uma
  * variável (inteiro quantidade).
  */
-public class TransacaoEstoque extends Transacao {
+public abstract class TransacaoEstoque extends Transacao {
 
     /**
      * Dicionário de chave Produto e quantidade de produto, assim podemos controlar melhor a quantidade de itens
@@ -19,72 +21,60 @@ public class TransacaoEstoque extends Transacao {
      */
     private final EnumMap<Produto, Integer> produtos = new EnumMap<>(Produto.class);
 
-    private final Tipo tipo;
-
     /**
-     * Transação que altera estoque de Produto automaticamente. O tipo da transação REPOSICAO implica que a quantidade
-     * tratada é em caixas.
+     * Transação que altera estoque de Produto automaticamente.
      *
      * @param usuario o usuário realizando a transação
      * @param data    a data da transação
-     * @param tipo    tipo de transação (reposição ou compra)
      */
     /*
      * Esse construtor deve ser inicializado pelo usuário (e usuário administrador), assim o método em Usuário adiciona
-     * à sua própria lista de transações. O tipo REPOSICAO irá trabalhar apenas com quantidade de caixas, então é
-     * necessário lembrar no cálculo de estoque de algum Produto disso.
+     * à sua própria lista de transações.
      */
-    public TransacaoEstoque(Usuario usuario, Date data, Tipo tipo) {
+    public TransacaoEstoque(Usuario usuario, Date data) {
         super(usuario, data);
-        this.tipo = tipo;
         /* Adicionamos a transação à lista estática em Produto (o controle/histórico de estoque) */
         Produto.adicionarTransacao(this);
     }
 
     /**
-     * @return o tipo da transação
+     * Calcula o valor individual do produto nessa transação. Possui fórmula quantidade de unidades * preço unitário.
+     *
+     * @param produto produto a ter valor calculado
+     * @return valor das unidades
      */
-    public Tipo getTipo() {
-        return tipo;
+    public double getValor(Produto produto) {
+        return produtos.getOrDefault(produto, 0) * produto.getPreco();
     }
 
     @Override
     public double getValor() {
         double valor = 0.0D;
-        /* Fazer um loop entre cada par <produto, quantidade> */
+        for (Produto produto : Produto.values()) {
+            valor += getValor(produto);
+        }
         return valor;
     }
 
     /**
-     * Confere a quantidade de produto na transação. Se o tipo for REPOSICAO, trata-se do número de caixas.
-     *
-     * @param produto produto a ser conferido
-     * @return quantidade de produto na transação.
-     * @see Produto#getQuantidadePorCaixa() para o cálculo de unidades a partir de caixa no tipo REPOSICAO.
-     */
-    /*
-     * Intellij IDEA permite você clicar em links utilizando @see ;)
-     */
-    public int checarQuantidade(Produto produto) {
-        return 0;
-    }
-
-    /**
      * Função confere se algum produto dessa espécie já foi inserido na lista para depois adicionar a quantidade
-     * desejada na transação. Trata-se da quantidade de caixas caso o tipo for REPOSICAO.
+     * desejada na transação.
      *
      * @param produto    tipo do produto a ser adicionado à transação
      * @param quantidade quantidade do produto a ser adicionado à transação, ** DEVE SER POSITIVO **
-     * @return true se a adição ocorreu como esperado, false se a quantidade de produtos é negativa e a transação não
-     * foi alterada.
+     * @return true se a adição ocorreu como esperado, alterando a transação. False se a quantidade de produtos é
+     * negativa.
      */
     public boolean adicionarProduto(Produto produto, int quantidade) {
-        return false;
+        if (quantidade <= 0) {
+            return false;
+        }
+        produtos.put(produto, quantidade + produtos.getOrDefault(produto, 0));
+        return true;
     }
 
     /**
-     * Remove uma quantidade de produtos da transação conferindo se esse produto existe na transação. Se o tipo for
-     * REPOSICAO, trata-se da quantidade de caixas e não de unidades.
+     * Remove uma quantidade de produtos da transação conferindo se esse produto existe na transação.
      *
      * @param produto    tipo do produto a ser removido da transação
      * @param quantidade quantidade do produto a ser removido da transação. ** DEVE SER POSITIVO **
@@ -92,11 +82,20 @@ public class TransacaoEstoque extends Transacao {
      * suficientes para remover.
      */
     public boolean removerProduto(Produto produto, int quantidade) {
+        if (quantidade > 0 && produtos.getOrDefault(produto, 0) >= quantidade) {
+            produtos.put(produto, produtos.get(produto) - quantidade);
+            return true;
+        }
         return false;
     }
 
-    public enum Tipo {
-        COMPRA,
-        REPOSICAO
+    /**
+     * Confere a quantidade de produto na transação.
+     *
+     * @param produto produto a ser conferido
+     * @return quantidade de produto na transação.
+     */
+    public int quantidadeProduto(Produto produto) {
+        return produtos.getOrDefault(produto, 0);
     }
 }

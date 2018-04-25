@@ -54,10 +54,6 @@ public class Usuario {
      * alterá-la sem verificar o e-mail.
      */
     private String esqueciSenha = null;
-    /**
-     * Saldo, para ser consistente, precisa ter mesmo valor que a soma de todas as transações realizadas pelo usuário.
-     */
-    private double saldo = 0.0D;
 
     /**
      * Construtor padrão da classe usuário. Deverá salvar o aluno no banco de dados e, se já existe, lançar um erro
@@ -155,19 +151,20 @@ public class Usuario {
      * @param valor quantidade em reais a ser depositada
      */
     public void creditar(double valor) {
-        Transacao transacao = new Credito(this, new Date(), valor);
-        saldo += valor;
+        Credito credito = new Credito(this, new Date(), valor);
         /* Adicionamos a transação à lista de transações do usuário */
+        transacoes.add(credito);
     }
 
     /*
      * Podemos decidir se devemos criar Compra novamente (herdeira de TransacaoEstoque) só pra ficar mais explícito o
      * que é compra e o que não é.
      */
-    public TransacaoEstoque fazerCompra() {
-        TransacaoEstoque transacaoEstoque = new TransacaoEstoque(this, new Date(), TransacaoEstoque.Tipo.COMPRA);
+    public Compra fazerCompra() {
+        Compra compra = new Compra(this, new Date());
         /* Adicionamos a transação à lista de transações do usuário */
-        return transacaoEstoque;
+        transacoes.add(compra);
+        return compra;
     }
 
     /**
@@ -195,6 +192,16 @@ public class Usuario {
      * @return o saldo do usuário. Deverá ser recalculado após qualquer nova transação.
      */
     public double getSaldo() {
+        double saldo = 0.0D;
+
+        for (Transacao transacao: transacoes){
+            if (transacao instanceof Credito){
+                saldo += transacao.getValor();
+            } else if (transacao instanceof Compra){
+                saldo -= transacao.getValor();
+            }
+        }
+
         return saldo;
     }
 

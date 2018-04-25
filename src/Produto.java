@@ -37,12 +37,40 @@ public enum Produto {
     }
 
     /**
+     * Filtra todas as transações que envolvem este produto.
+     *
+     * @return a lista de transações que alteram a quantidade desse produto.
+     * @see Collections#unmodifiableList(List) lista não modificável
+     */
+    public List<TransacaoEstoque> getTransacoes() {
+        ArrayList<TransacaoEstoque> transacoesProduto = new ArrayList<>();
+
+        for (TransacaoEstoque transacaoEstoque : transacoes) {
+            if (transacaoEstoque.quantidadeProduto(this) > 0) {
+                transacoesProduto.add(transacaoEstoque);
+            }
+        }
+
+        return Collections.unmodifiableList(transacoesProduto);
+    }
+
+    /**
      * Calcula o estoque a partir do histórico de transações.
      *
-     * @return o controle do estoque
+     * @return o estoque deste produto
      */
     public int getEstoque() {
-        return 0;
+        int estoque = 0;
+
+        for (TransacaoEstoque transacaoEstoque : getTransacoes()) {
+            if (transacaoEstoque instanceof Compra) {
+                estoque -= transacaoEstoque.quantidadeProduto(this);
+            } else {
+                estoque += transacaoEstoque.quantidadeProduto(this);
+            }
+        }
+
+        return estoque;
     }
 
     @Override
@@ -65,7 +93,7 @@ public enum Produto {
      * @return uma lista não modificável de transações.
      * @see Collections#unmodifiableList(List) lista não modificável
      */
-    public static List<TransacaoEstoque> getTransacoes() {
+    public static List<TransacaoEstoque> getTodasTransacoes() {
         return Collections.unmodifiableList(transacoes);
     }
 }
