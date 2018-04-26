@@ -71,8 +71,8 @@ public class Produto{
 	}
 
 	public String toString(){
-	    return "\t* " + getNome() + " (R$" +getPrecoCusto()+ "/caixa com " + getQntCaixa() + "unidades)"
-               + "vendido a preco unitario de R$" + getPrecoVenda() + ". Estoque atual: " +getEstoque()+"\n";
+	    return "\t* " + getNome() + " (R$" +getPrecoCusto()+ "/caixa com " + getQntCaixa() + " unidades)"
+               + " vendido a preco unitario de R$" + getPrecoVenda() + ". Estoque atual: " +getEstoque()+"\n";
     }
 	
 }

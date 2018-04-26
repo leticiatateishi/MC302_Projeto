@@ -10,9 +10,10 @@ public class ProdutoEspecial extends Produto{
 		produtoEspecial = new HashSet<Produto>();
 	}
 	
-	public void adicionarVariacaoProduto(String nome){
-		Produto produto = new Produto(nome,getPrecoVenda(),getPrecoCompra(),getQntCaixa());
+	public Produto adicionarVariacaoProduto(String nome){
+		Produto produto = new Produto(nome,getPrecoVenda(),getPrecoCusto(),getQntCaixa());
 		produtoEspecial.add(produto);
+		return produto;
 	}
 	
 	public Set<Produto> getVariacoes() {
