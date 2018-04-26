@@ -155,7 +155,7 @@ public class Usuario {
      *
      * @param valor quantidade em reais a ser depositada
      */
-    public void creditar(double valor) {
+    public void creditar(float valor) {
         Credito credito = new Credito(this, new Date(), valor);
         /* Adicionamos a transação à lista de transações do usuário */
         transacoes.add(credito);
@@ -203,13 +203,13 @@ public class Usuario {
     /**
      * @return o saldo do usuário. Deverá ser recalculado após qualquer nova transação.
      */
-    public double getSaldo() {
-        double saldo = 0.0D;
+    public float getSaldo() {
+        float saldo = 0.0f;
 
-        for (Transacao transacao: transacoes){
-            if (transacao instanceof Credito){
+        for (Transacao transacao : transacoes) {
+            if (transacao instanceof Credito) {
                 saldo += transacao.getValor();
-            } else if (transacao instanceof Compra){
+            } else if (transacao instanceof Compra) {
                 saldo -= transacao.getValor();
             }
         }

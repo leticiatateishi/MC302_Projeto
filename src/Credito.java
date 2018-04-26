@@ -2,14 +2,14 @@ import java.util.Date;
 
 public class Credito extends Transacao {
 
-    private final double valor;
+    private final float valor;
 
-    public Credito(Usuario usuario, Date data, double valor) {
+    public Credito(Usuario usuario, Date data, float valor) {
         super(usuario, data);
         this.valor = valor;
     }
 
-    public double getValor() {
+    public float getValor() {
         return valor;
     }
 

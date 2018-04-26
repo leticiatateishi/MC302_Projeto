@@ -33,6 +33,6 @@ public abstract class Transacao {
      *
      * @return o valor total da transação em reais.
      */
-    public abstract double getValor();
+    public abstract float getValor();
 
 }

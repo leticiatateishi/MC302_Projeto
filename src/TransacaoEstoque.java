@@ -41,14 +41,16 @@ public abstract class TransacaoEstoque extends Transacao {
      * @param produto produto a ter valor calculado
      * @return valor das unidades
      */
-    public abstract double getValor(Produto produto);
+    public abstract float getValor(Produto produto);
 
     @Override
-    public double getValor() {
-        double valor = 0.0D;
+    public float getValor() {
+        float valor = 0.0f;
+
         for (Produto produto : Produto.getProdutos()) {
             valor += getValor(produto);
         }
+
         return valor;
     }
 
@@ -59,10 +61,10 @@ public abstract class TransacaoEstoque extends Transacao {
      * @param produto    tipo do produto a ser adicionado à transação
      * @param quantidade quantidade do produto a ser adicionado à transação, ** DEVE SER POSITIVO **
      * @return true se a adição ocorreu como esperado, alterando a transação. False se a quantidade de produtos é
-     * negativa.
+     * negativa ou se o produto é especial (não é possível repor algo sem especificar sua variante).
      */
     public boolean adicionarProduto(Produto produto, int quantidade) {
-        if (quantidade <= 0) {
+        if (produto.isEspecial() || quantidade <= 0) {
             return false;
         }
         produtos.put(produto, quantidade + produtos.getOrDefault(produto, 0));
@@ -92,6 +94,9 @@ public abstract class TransacaoEstoque extends Transacao {
      * @return quantidade de produto na transação.
      */
     public int quantidadeProduto(Produto produto) {
+        if (produto.isEspecial()) {
+            return 0;
+        }
         return produtos.getOrDefault(produto, 0);
     }
 }

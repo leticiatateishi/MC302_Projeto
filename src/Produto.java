@@ -59,6 +59,10 @@ public class Produto {
         this.quantidadePorCaixa = quantidadePorCaixa;
     }
 
+    public boolean isEspecial() {
+        return false;
+    }
+
     @Override
     public int hashCode() {
         return nome.hashCode();
@@ -69,16 +73,17 @@ public class Produto {
         return o instanceof Produto && ((Produto) o).getNome().equals(nome);
     }
 
+    @Override
+    public String toString() {
+        return "\t* " + getNome() + " (R$" + getPrecoCusto() + "/caixa com " + getQuantidadePorCaixa() + "unidades)"
+                + "vendido a preco unitario de R$" + getPrecoVenda() + ". Estoque atual: " + getEstoque() + "\n";
+    }
+
     public static void adicionarTransacao(TransacaoEstoque transacaoEstoque) {
         transacoes.add(transacaoEstoque);
     }
 
     public static Set<Produto> getProdutos() {
         return Collections.unmodifiableSet(produtos);
-    }
-
-    public String toString() {
-        return "\t* " + getNome() + " (R$" + getPrecoCusto() + "/caixa com " + getQuantidadePorCaixa() + "unidades)"
-                + "vendido a preco unitario de R$" + getPrecoVenda() + ". Estoque atual: " + getEstoque() + "\n";
     }
 }
