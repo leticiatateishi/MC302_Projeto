@@ -14,4 +14,9 @@ public class Reposicao extends TransacaoEstoque {
     public Reposicao(Usuario usuario, Date data) {
         super(usuario, data);
     }
+
+
+    public String toString(){
+        return super.toString();
+    }
 }

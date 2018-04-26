@@ -28,4 +28,8 @@ public class Compra extends TransacaoEstoque {
     public boolean adicionarProduto(Produto produto, int quantidade) {
         return quantidade <= produto.getEstoque() && super.adicionarProduto(produto, quantidade);
     }
+
+    public String toString(){
+        return "Compra realizada na data" +getData()+ " por " +getUsuario();
+    }
 }
