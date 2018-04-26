@@ -28,4 +28,11 @@ public class Compra extends TransacaoEstoque {
     public boolean adicionarProduto(Produto produto, int quantidade) {
         return quantidade <= produto.getEstoque() && super.adicionarProduto(produto, quantidade);
     }
+    
+
+
+    @Override
+    public double getValor(Produto produto) {
+        return produtos.getOrDefault(produto, 0) * produto.getPrecoVenda();
+    }
 }
