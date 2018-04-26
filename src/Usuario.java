@@ -2,9 +2,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.Set;
 
 /**
@@ -14,6 +12,12 @@ import java.util.Set;
  * Será possível determinar quais usuários compraram quais itens e quando, quem está com saldo negativo ou positivo.
  */
 public class Usuario {
+
+    /**
+     * Gerador de números cuja seed é o horário de inicialização da variável (não precisa possuir tanta segurança).
+     * É utilizado para gerar códigos para alteração de senha.
+     */
+    private static final Random gerador = new Random(System.currentTimeMillis());
 
     /**
      * Variável estática que guardará todos os usuários registrados (banco de dados na memória). É estático pois está
@@ -38,13 +42,10 @@ public class Usuario {
      */
     protected final ArrayList<Transacao> transacoes = new ArrayList<>();
 
-    /* Atributos do objeto que devem ser constantes */
     /**
      * Registro acadêmico (RA) do usuário
      */
     private final int ra;
-
-    /* Atributos do objeto que podem variar e, portanto, não devem servir de  */
     /**
      * PIN (senha de 4 digitos numéricos) do usuário.
      */
@@ -53,14 +54,12 @@ public class Usuario {
      * E-mail do usuário, será usado para pedidos de troca de senha.
      */
     private String email;
-
-    /* Atributos que possuem valor padrão */
     /**
-     * A variável esqueciSenha só irá ser usada por aqueles que pedem pra mudar a senha. É um String (ao invés de int)
-     * pois pode assumir valor null e nos permite sobrecarregar o método alterarSenha, permitindo quem saiba a senha
-     * alterá-la sem verificar o e-mail.
+     * A variável esqueciSenha só irá ser usada por aqueles que pedem pra mudar a senha por e-mail. Possui um código
+     * em String. É null para aqueles que não querem mudar a senha. Apesar de usarmos uma senha numérica, utilizamos
+     * String pois é possível sobrecarregar o método alterarSenha.
      */
-    private String esqueciSenha = null;
+    private CodigoAlteracao esqueciSenha = null;
 
     /**
      * Construtor padrão da classe usuário. Deverá salvar o aluno no banco de dados e, se já existe, lançar um erro
@@ -93,24 +92,13 @@ public class Usuario {
 
     /**
      * A função deverá enviar um e-mail para o usuário com um código que deverá ser registrado em "esqueciSenha", de
-     * maneira que o usuário consiga criar uma nova senha a partir do e-mail.
+     * maneira que o usuário consiga criar uma nova senha a partir do e-mail. O número aleatório está entre 10.000 e
+     * 99.999.
      */
     public void pedirTrocaSenha() {
-        Random randomNumbers = new Random(System.nanoTime());
-        Scanner sc = new Scanner(System.in);
+        this.esqueciSenha = new CodigoAlteracao();
 
-        esqueciSenha = Integer.toString(randomNumbers.nextInt());
-
-        // Mandar o codigo no email
-
-        System.out.println("Insira o codigo recebido no e-mail:");
-        int tentativas = 0;
-        while (!alterarSenha(sc.next()) && ++tentativas < 3) {
-            System.out.println("Codigo errado, tente de novo:");
-        }
-        if (tentativas == 3) {
-            System.out.println("Limite de tentativas excedido!");
-        }
+        // TODO: Mandar o codigo no email
     }
 
 
@@ -118,18 +106,24 @@ public class Usuario {
      * Alteramos a senha do usuário caso o código seja idêntico ao esqueciSenha.
      *
      * @param codigo código enviado ao usuário para permitir a alteração de senha sem saber a senha atual.
-     *               //@param nova   senha nova (devemos conefrir antes de chamar esse método se a senha
      * @return true no caso em que a senha foi alterada com sucesso. False no caso em que o código esteja incorreto ou
      * que o novo PIN seja inválido.
      */
-    public boolean alterarSenha(String codigo) {
-        Scanner sc = new Scanner(System.in);
+    public boolean alterarSenha(String codigo, int pin) {
+        if (esqueciSenha == null || pin < 0 || pin > 9_999 || !esqueciSenha.podeRealizarTentativa() ||
+                !esqueciSenha.realizarTentativa(Integer.valueOf(codigo))) {
+            return false;
+        }
 
-        if (Objects.equals(codigo, esqueciSenha)) {
-            System.out.println("Insira nova senha:");
-            pin = sc.nextInt();
-            return true;
-        } else return false;
+        this.pin = pin;
+        return true;
+    }
+
+    /**
+     * @return true se o usuário pode alterar a senha utilizando o código enviado por e-mail.
+     */
+    public boolean podeAlterarSenha() {
+        return esqueciSenha != null && esqueciSenha.podeRealizarTentativa();
     }
 
     /**
@@ -239,5 +233,42 @@ public class Usuario {
      */
     public static Set<Usuario> getUsuarios() {
         return Collections.unmodifiableSet(usuarios);
+    }
+
+    /**
+     * Classe que controla o código de alteração de senha, invalidando-o caso o número de tentativas seja ultrapassado.
+     */
+    public class CodigoAlteracao {
+
+        private static final int QUANTIDADE_MAXIMA = 3;
+
+        private final int codigo;
+        private int tentativas = 0;
+
+        private CodigoAlteracao() {
+            this.codigo = gerador.nextInt(100_000 - 10_000) + 10_000;
+        }
+
+        /**
+         * @return true se o usuário pode realizar outra tentativa
+         */
+        public boolean podeRealizarTentativa() {
+            return tentativas <= 3;
+        }
+
+        public boolean realizarTentativa(int codigo) {
+            if (!podeRealizarTentativa()) {
+                return false;
+            }
+
+            tentativas++;
+            return this.codigo == codigo;
+        }
+
+        @Override
+        public String toString() {
+            return "Alteração de senha: código = \"" + codigo + "\", tentativas remanescentes = "
+                    + (QUANTIDADE_MAXIMA - tentativas);
+        }
     }
 }
