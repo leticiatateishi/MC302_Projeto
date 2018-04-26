@@ -31,7 +31,7 @@ public class Compra extends TransacaoEstoque {
 
 
     public String toString() {
-        return "Compra realizada na data" + getData() + " por " + getUsuario();
+        return "Compra realizada na data " + getData() + " por " + getUsuario() + " no valor de R$" +getValor();
     }
 
 

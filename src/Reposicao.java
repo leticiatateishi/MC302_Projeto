@@ -21,6 +21,11 @@ public class Reposicao extends TransacaoEstoque {
 
     @Override
     public double getValor(Produto produto) {
-        return produtos.getOrDefault(produto, 0) * produto.getPrecoCompra();
+        return produtos.getOrDefault(produto, 0) * produto.getPrecoCusto();
+    }
+
+    @Override
+    public int quantidadeProduto(Produto produto) {
+        return super.quantidadeProduto(produto)*produto.getQntCaixa();
     }
 }

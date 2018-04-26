@@ -5,16 +5,17 @@ import java.util.Set;
 public class Produto{
 	
 	private final String nome;
-	private float precoVenda, precoCompra;
+	private float precoVenda, precoCusto;
 	private int qntCaixa;
-	private static final ArrayList<TransacaoEstoque> transacoes = new ArrayList<TransacaoEstoque>();
-	private static final HashSet<Produto> produtos = new HashSet<Produto>();
+	private static final ArrayList<TransacaoEstoque> transacoes = new ArrayList<>();
+	private static final HashSet<Produto> produtos = new HashSet<>();
 	
 	public Produto(String nome,float PV,float PC,int QC) {
 		this.nome = nome;
 		this.precoVenda = PV;
-		this.precoCompra = PC;
+		this.precoCusto = PC;
 		this.qntCaixa = QC;
+		produtos.add(this);
 	}
 	
 	public int getEstoque(){
@@ -29,6 +30,7 @@ public class Produto{
 		}
 		return estoque;
 	}
+
 	public static void adicionarTransacao(TransacaoEstoque aux) {
 		transacoes.add(aux);
 	}
@@ -46,11 +48,11 @@ public class Produto{
 	public void setPrecoVenda(float precoVenda) {
 		this.precoVenda = precoVenda;
 	}
-	public float getPrecoCompra() {
-		return precoCompra;
+	public float getPrecoCusto() {
+		return precoCusto;
 	}
-	public void setPrecoCompra(float precoCompra) {
-		this.precoCompra = precoCompra;
+	public void setPrecoCusto(float precoCusto) {
+		this.precoCusto = precoCusto;
 	}
 	public int getQntCaixa() {
 		return qntCaixa;
@@ -67,6 +69,11 @@ public class Produto{
 	public boolean equals(Object o) {
 		return o instanceof Produto && ((Produto) o).getNome().equals(nome);
 	}
+
+	public String toString(){
+	    return "\t* " + getNome() + " (R$" +getPrecoCusto()+ "/caixa com " + getQntCaixa() + "unidades)"
+               + "vendido a preco unitario de R$" + getPrecoVenda() + ". Estoque atual: " +getEstoque()+"\n";
+    }
 	
 }
 	
