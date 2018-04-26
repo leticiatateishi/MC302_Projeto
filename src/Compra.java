@@ -29,7 +29,14 @@ public class Compra extends TransacaoEstoque {
         return quantidade <= produto.getEstoque() && super.adicionarProduto(produto, quantidade);
     }
 
-    public String toString(){
-        return "Compra realizada na data" +getData()+ " por " +getUsuario();
+
+    public String toString() {
+        return "Compra realizada na data" + getData() + " por " + getUsuario();
+    }
+
+
+    @Override
+    public double getValor(Produto produto) {
+        return produtos.getOrDefault(produto, 0) * produto.getPrecoVenda();
     }
 }

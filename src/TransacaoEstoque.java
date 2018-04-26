@@ -1,5 +1,6 @@
 import java.util.Date;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,10 +17,7 @@ public abstract class TransacaoEstoque extends Transacao {
      * Dicionário de chave Produto e quantidade de produto, assim podemos controlar melhor a quantidade de itens
      * comprados/repostos sem classes complexas de adicionar e remover.
      */
-    /*
-     * Mais informações: https://docs.oracle.com/javase/10/docs/api/java/util/EnumMap.html
-     */
-    private final EnumMap<Produto, Integer> produtos = new EnumMap<>(Produto.class);
+    protected final HashMap<Produto, Integer> produtos = new HashMap<>();
 
     /**
      * Transação que altera estoque de Produto automaticamente.
@@ -43,14 +41,12 @@ public abstract class TransacaoEstoque extends Transacao {
      * @param produto produto a ter valor calculado
      * @return valor das unidades
      */
-    public double getValor(Produto produto) {
-        return produtos.getOrDefault(produto, 0) * produto.getPreco();
-    }
+    public abstract double getValor(Produto produto);
 
     @Override
     public double getValor() {
         double valor = 0.0D;
-        for (Produto produto : Produto.values()) {
+        for (Produto produto : Produto.getProdutos()) {
             valor += getValor(produto);
         }
         return valor;
