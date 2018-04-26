@@ -2,8 +2,8 @@ import java.util.*;
 
 public class Produto {
 
-    private static final ArrayList<TransacaoEstoque> transacoes = new ArrayList<TransacaoEstoque>();
-    private static final HashSet<Produto> produtos = new HashSet<Produto>();
+    private static final ArrayList<TransacaoEstoque> transacoes = new ArrayList<>();
+    private static final HashSet<Produto> produtos = new HashSet<>();
 
     private final String nome;
     private float precoVenda, precoCusto;

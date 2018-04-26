@@ -15,6 +15,10 @@ public class Reposicao extends TransacaoEstoque {
         super(usuario, data);
     }
 
+    public String toString() {
+        return super.toString();
+    }
+
     @Override
     public double getValor(Produto produto) {
         return produtos.getOrDefault(produto, 0) * produto.getPrecoCusto();

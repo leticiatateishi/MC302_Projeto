@@ -230,7 +230,7 @@ public class Usuario {
 
     @Override
     public String toString() {
-        return "R.A.: " + ra + ", e-mail: " + email + "\n";
+        return "R.A.: " + getRA() + ", e-mail: " + getEmail() + "\n";
     }
 
     /**
