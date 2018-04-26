@@ -29,7 +29,7 @@ public class Usuario {
      * Variável que guardará as transações executadas pelo usuário. Deverá ser mantida a ordem, ou seja, mais novo deve
      * vir primeiro ou por último. Isso deve ser definido na implementação.
      */
-    private final ArrayList<Transacao> transacoes = new ArrayList<>();
+    protected final ArrayList<Transacao> transacoes = new ArrayList<>();
 
     /* Atributos do objeto que devem ser constantes */
     /**
@@ -89,15 +89,14 @@ public class Usuario {
      * maneira que o usuário consiga criar uma nova senha a partir do e-mail.
      */
     public void pedirTrocaSenha() {
-
         Random randomNumbers = new Random(System.nanoTime());
         Scanner sc = new Scanner(System.in);
 
         esqueciSenha = Integer.toString(randomNumbers.nextInt());
 
-        //Mandar o codigo no email
+        // Mandar o codigo no email
 
-        System.out.println("Insira o codigo recebido no email:");
+        System.out.println("Insira o codigo recebido no e-mail:");
         int tentativas = 0;
         while (!alterarSenha(sc.next()) && ++tentativas < 3) {
             System.out.println("Codigo errado, tente de novo:");
@@ -117,7 +116,6 @@ public class Usuario {
      * que o novo PIN seja inválido.
      */
     public boolean alterarSenha(String codigo) {
-
         Scanner sc = new Scanner(System.in);
 
         if (Objects.equals(codigo, esqueciSenha)) {
@@ -186,6 +184,13 @@ public class Usuario {
      */
     public String getEmail() {
         return email;
+    }
+
+    /**
+     * @return true se o usuário for do tipo Administrador (pode registrar reposição, aka. é do CACo)
+     */
+    public boolean isAdmin() {
+        return false;
     }
 
     /**
