@@ -76,4 +76,9 @@ public class Produto {
     public static Set<Produto> getProdutos() {
         return Collections.unmodifiableSet(produtos);
     }
+
+    public String toString() {
+        return "\t* " + getNome() + " (R$" + getPrecoCusto() + "/caixa com " + getQuantidadePorCaixa() + "unidades)"
+                + "vendido a preco unitario de R$" + getPrecoVenda() + ". Estoque atual: " + getEstoque() + "\n";
+    }
 }
