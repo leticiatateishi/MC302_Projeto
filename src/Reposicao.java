@@ -11,7 +11,7 @@ public class Reposicao extends TransacaoEstoque {
      * @param usuario o usuário realizando a transação
      * @param data    a data da transação
      */
-    public Reposicao(Usuario usuario, Date data) {
+    public Reposicao(UsuarioAdministrador usuario, Date data) {
         super(usuario, data);
     }
 }

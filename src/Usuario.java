@@ -1,4 +1,11 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Random;
+import java.util.Scanner;
+import java.util.Set;
 
 /**
  * Classe que guarda as informações do usuário. A ideia é conseguir determinar o saldo do usuário através da soma de
