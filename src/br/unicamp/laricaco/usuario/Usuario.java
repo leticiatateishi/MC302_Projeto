@@ -1,9 +1,10 @@
+package br.unicamp.laricaco.usuario;
+
+import br.unicamp.laricaco.transacoes.*;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 
 /**
  * Classe que guarda as informações do usuário. A ideia é conseguir determinar o saldo do usuário através da soma de
@@ -20,25 +21,8 @@ public class Usuario {
     private static final Random gerador = new Random(System.currentTimeMillis());
 
     /**
-     * Variável estática que guardará todos os usuários registrados (banco de dados na memória). É estático pois está
-     * atrelado à classe e não a cada objeto usuário. Através dos **construtores** iremos manter o banco de dados.
-     * <p>
-     * HashSet é uma coleção (estrutura de dados) que utiliza hashing pra definir igualdade. Não poderá haver 2 usuários
-     * com o mesmo hash. O hash de cada objeto é calculado pelo método hashCode() que será sobreescrito do objeto-base
-     * Object. Consequentemente, devemos sobreescrever o método equals(Object) para definir a igualdade de maneira
-     * consistente.
-     * Isso é necessário para mantermos apenas uma cópia do objeto na memória (ou seja, não devemos possuir dois
-     * usuários com mesmo RA, e essa estrutura irá garantir isso). No entanto, precisamos tomar cuidado na hora de
-     * adicionar itens, o método add(Usuario) do HashSet só irá retornar true se a estrutura foi modificada, retornará
-     * false se o objeto não foi inserido por ser um duplicate.
-     * Mais informações: https://en.wikipedia.org/wiki/Java_hashCode%28%29 e
-     * https://www.javaworld.com/article/2074996/hashcode-and-equals-method-in-java-object---a-pragmatic-concept.html
-     */
-    private final static HashSet<Usuario> usuarios = new HashSet<>();
-
-    /**
      * Variável que guardará as transações executadas pelo usuário. Deverá ser mantida a ordem, ou seja, mais novo deve
-     * vir primeiro ou por último. Isso deve ser definido na implementação.
+     * vir primeiro ou por último. Isso deve ser respeitado por quem implementa.
      */
     protected final ArrayList<Transacao> transacoes = new ArrayList<>();
 
@@ -61,33 +45,10 @@ public class Usuario {
      */
     private CodigoAlteracao esqueciSenha = null;
 
-    /**
-     * Construtor padrão da classe usuário. Deverá salvar o aluno no banco de dados e, se já existe, lançar um erro
-     * como IllegalArgumentException, informando a chamada do construtor que o RA é inválido. O trecho "throws" implica
-     * que toda chamada para um novo usuário precisará tratar o caso em que exista o erro, seja avisando o usuário por
-     * uma janela, seja quebrando o programa (caso que acontece se a exceção não é tratada). A importância da unicidade
-     * de cada usuário é importante o suficiente para lançarmos esse tipo de erro.
-     * <p>
-     * Para tratar a exceção nas chamadas de new Usuario, utilize o escopo "try-catch".
-     * Para fins de teste, acredito que podemos remover o trecho "throws", pois podemos ignorar isso até a versão de
-     * "produção".
-     * <p>
-     * Podemos tratar o PIN como mesma importância que um RA, lançando um erro que pode ser considerado da mesma forma
-     * ou, para diferenciar, lançar IllegalStateException para o RA (interpretamos estado sendo incorreto no sentido em
-     * que entramos num estado em que o RA está duplicado) e IllegalArgumentException para a senha no formato inválido.
-     *
-     * @param ra    registro acadêmico do usuário
-     * @param pin   senha de 4 dígitos numéricos (deveremos conferir antes de criar o usuário o formato da senha no caso
-     *              em que não lançamos o erro para o Pin errado)
-     * @param email e-mail do usuário
-     * @throws IllegalArgumentException caso o RA já exista na lista de RAs registrados.
-     */
-    public Usuario(int ra, int pin, String email) /*throws IllegalArgumentException, IllegalStateException*/ {
+    Usuario(int ra, int pin, String email) {
         this.ra = ra;
         this.pin = pin;
         this.email = email;
-        /* Adicionamos o usuário à lista de usuários */
-        usuarios.add(this);
     }
 
     /**
@@ -225,14 +186,6 @@ public class Usuario {
     @Override
     public String toString() {
         return "R.A.: " + getRA() + ", e-mail: " + getEmail();
-    }
-
-    /**
-     * @return conjunto não modificável de usuários
-     * @see Collections#unmodifiableSet(Set) conjunto não modificável
-     */
-    public static Set<Usuario> getUsuarios() {
-        return Collections.unmodifiableSet(usuarios);
     }
 
     /**

@@ -1,8 +1,10 @@
+package br.unicamp.laricaco.transacoes;
+
+import br.unicamp.laricaco.estoque.*;
+import br.unicamp.laricaco.usuario.*;
+
 import java.util.Date;
-import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Classe intermediária entre Transacao e Produtos, permitindo uma relação bidirecional entre usuário e produtos.
@@ -32,7 +34,7 @@ public abstract class TransacaoEstoque extends Transacao {
     public TransacaoEstoque(Usuario usuario, Date data) {
         super(usuario, data);
         /* Adicionamos a transação à lista estática em Produto (o controle/histórico de estoque) */
-        Produto.adicionarTransacao(this);
+//        Produto.adicionarTransacao(this);
     }
 
     /**
@@ -47,9 +49,9 @@ public abstract class TransacaoEstoque extends Transacao {
     public float getValor() {
         float valor = 0.0f;
 
-        for (Produto produto : Produto.getProdutos()) {
-            valor += getValor(produto);
-        }
+//        for (Produto produto : Produto.getProdutos()) {
+//            valor += getValor(produto);
+//        }
 
         return valor;
     }

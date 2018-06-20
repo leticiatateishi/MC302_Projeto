@@ -1,3 +1,8 @@
+package br.unicamp.laricaco.transacoes;
+
+import br.unicamp.laricaco.estoque.*;
+import br.unicamp.laricaco.usuario.*;
+
 import java.util.Date;
 
 /**
@@ -26,7 +31,8 @@ public class Compra extends TransacaoEstoque {
      */
     @Override
     public boolean adicionarProduto(Produto produto, int quantidade) {
-        return quantidade <= produto.getEstoque() && super.adicionarProduto(produto, quantidade);
+//        return quantidade <= produto.getEstoque() && super.adicionarProduto(produto, quantidade);
+        return false;
     }
 
     @Override

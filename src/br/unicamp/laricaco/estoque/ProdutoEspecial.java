@@ -1,3 +1,5 @@
+package br.unicamp.laricaco.estoque;
+
 import java.util.*;
 
 public class ProdutoEspecial extends Produto {
@@ -6,17 +8,6 @@ public class ProdutoEspecial extends Produto {
 
     public ProdutoEspecial(String nome, float precoVenda, float precoCusto, int quantidadePorCaixa) {
         super(nome, precoVenda, precoCusto, quantidadePorCaixa);
-    }
-
-    @Override
-    public int getEstoque() {
-        int estoque = 0;
-
-        for (Produto produto : getVariacoes()) {
-            estoque += produto.getEstoque();
-        }
-
-        return estoque;
     }
 
     public Produto adicionarVariacaoProduto(String nome) {
@@ -37,7 +28,6 @@ public class ProdutoEspecial extends Produto {
     @Override
     public String toString() {
         return "Especial: " + getNome() + " (R$" + getPrecoCusto() + "/caixa com " + getQuantidadePorCaixa() +
-                "unidades) vendido a preco unitario de R$" + getPrecoVenda() + ". Estoque atual: " + getEstoque() +
-                "\n";
+                "unidades) vendido a preco unitario de R$" + getPrecoVenda() + "\n";
     }
 }

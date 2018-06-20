@@ -1,3 +1,7 @@
+package br.unicamp.laricaco.transacoes;
+
+import br.unicamp.laricaco.usuario.*;
+
 import java.util.Date;
 
 /**

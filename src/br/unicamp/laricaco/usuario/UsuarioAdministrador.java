@@ -1,8 +1,12 @@
+package br.unicamp.laricaco.usuario;
+
+import br.unicamp.laricaco.transacoes.*;
+
 import java.util.Date;
 
 public class UsuarioAdministrador extends Usuario {
 
-    public UsuarioAdministrador(int ra, int pin, String email) {
+    UsuarioAdministrador(int ra, int pin, String email) {
         super(ra, pin, email);
     }
 

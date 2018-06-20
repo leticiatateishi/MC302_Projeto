@@ -1,34 +1,20 @@
+package br.unicamp.laricaco.estoque;
+
+import br.unicamp.laricaco.transacoes.*;
+
 import java.util.*;
 
 public class Produto {
-
-    private static final ArrayList<TransacaoEstoque> transacoes = new ArrayList<>();
-    private static final HashSet<Produto> produtos = new HashSet<>();
 
     private final String nome;
     private float precoVenda, precoCusto;
     private int quantidadePorCaixa;
 
-    public Produto(String nome, float precoVenda, float precoCusto, int quantidadePorCaixa) {
+    Produto(String nome, float precoVenda, float precoCusto, int quantidadePorCaixa) {
         this.nome = nome;
         this.precoVenda = precoVenda;
         this.precoCusto = precoCusto;
         this.quantidadePorCaixa = quantidadePorCaixa;
-        produtos.add(this);
-    }
-
-    public int getEstoque() {
-        int estoque = 0;
-
-        for (TransacaoEstoque transacaoEstoque : transacoes) {
-            if (transacaoEstoque instanceof Compra) {
-                estoque -= transacaoEstoque.quantidadeProduto(this);
-            } else if (transacaoEstoque instanceof Reposicao) {
-                estoque += transacaoEstoque.quantidadeProduto(this);
-            }
-        }
-
-        return estoque;
     }
 
     public String getNome() {
@@ -69,21 +55,13 @@ public class Produto {
     }
 
     @Override
-    public boolean equals(Object o) {
-        return o instanceof Produto && ((Produto) o).getNome().equals(nome);
+    public boolean equals(Object object) {
+        return object instanceof Produto && ((Produto) object).getNome().equals(nome);
     }
 
     @Override
     public String toString() {
         return "\t* " + getNome() + " (R$" + getPrecoCusto() + "/caixa com " + getQuantidadePorCaixa() + "unidades)"
-                + "vendido a preco unitario de R$" + getPrecoVenda() + ". Estoque atual: " + getEstoque() + "\n";
-    }
-
-    public static void adicionarTransacao(TransacaoEstoque transacaoEstoque) {
-        transacoes.add(transacaoEstoque);
-    }
-
-    public static Set<Produto> getProdutos() {
-        return Collections.unmodifiableSet(produtos);
+                + "vendido a preco unitario de R$" + getPrecoVenda() + "\n";
     }
 }

@@ -2,3 +2,6 @@
 *.iml
 *.uml
 out/*
+*.tar.gz
+*.pdf
+
