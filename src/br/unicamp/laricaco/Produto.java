@@ -1,3 +1,5 @@
+package br.unicamp.laricaco;
+
 import java.util.*;
 
 public class Produto {

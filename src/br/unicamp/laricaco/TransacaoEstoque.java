@@ -1,8 +1,7 @@
+package br.unicamp.laricaco;
+
 import java.util.Date;
-import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Classe intermediária entre Transacao e Produtos, permitindo uma relação bidirecional entre usuário e produtos.
