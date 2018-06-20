@@ -74,5 +74,9 @@ public class Main {
         System.out.println("\nPara ser consistente, a alteração de senha deve retornar false e true:");
         System.out.println(usuario1.alterarSenha(1021, 5555));
         System.out.println(usuario1.alterarSenha(1020, 5555));
+
+        JanelaLogin janela = new JanelaLogin();
+        janela.pack();
+        janela.setVisible(true);
     }
 }

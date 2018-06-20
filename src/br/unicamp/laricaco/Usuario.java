@@ -36,7 +36,7 @@ public class Usuario {
      * Mais informações: https://en.wikipedia.org/wiki/Java_hashCode%28%29 e
      * https://www.javaworld.com/article/2074996/hashcode-and-equals-method-in-java-object---a-pragmatic-concept.html
      */
-    private final static HashSet<Usuario> usuarios = new HashSet<>();
+    private final static HashSet<Usuario> usuarios = new HashSet<>(); //Passar para o servidor
 
     /**
      * Variável que guardará as transações executadas pelo usuário. Deverá ser mantida a ordem, ou seja, mais novo deve
@@ -240,6 +240,16 @@ public class Usuario {
     /**
      * Classe que controla o código de alteração de senha, invalidando-o caso o número de tentativas seja ultrapassado.
      */
+
+    //Passar para o servidor:
+    public static Usuario getUsuario(int ra){
+
+        for(Usuario i: usuarios){
+            if(i.ra == ra) return i;
+        }
+        return null;
+    }
+
     public class CodigoAlteracao {
 
         private static final int QUANTIDADE_MAXIMA = 3;
