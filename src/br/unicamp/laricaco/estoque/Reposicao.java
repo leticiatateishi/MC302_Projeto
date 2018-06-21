@@ -1,19 +1,12 @@
-package br.unicamp.laricaco;
+package br.unicamp.laricaco.estoque;
+
+import br.unicamp.laricaco.usuario.UsuarioAdministrador;
 
 import java.util.Date;
 
-/**
- * Classe que representa a adição de itens ao estoque.
- */
 public class Reposicao extends TransacaoEstoque {
 
-    /**
-     * Transação que altera estoque de Produto automaticamente.
-     *
-     * @param usuario o usuário realizando a transação
-     * @param data    a data da transação
-     */
-    public Reposicao(GerenciadorEstoque gerenciadorEstoque, UsuarioAdministrador usuario, Date data) {
+    Reposicao(GerenciadorEstoque gerenciadorEstoque, UsuarioAdministrador usuario, Date data) {
         super(gerenciadorEstoque, usuario, data);
     }
 

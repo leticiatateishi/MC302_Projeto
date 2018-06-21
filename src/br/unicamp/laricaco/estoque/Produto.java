@@ -1,4 +1,4 @@
-package br.unicamp.laricaco;
+package br.unicamp.laricaco.estoque;
 
 public class Produto {
 
@@ -9,7 +9,7 @@ public class Produto {
     private int quantidadePorCaixa;
 
     Produto(GerenciadorEstoque gerenciadorEstoque,
-                   String nome, float precoVenda, float precoCusto, int quantidadePorCaixa) {
+            String nome, float precoVenda, float precoCusto, int quantidadePorCaixa) {
         this.gerenciadorEstoque = gerenciadorEstoque;
         this.nome = nome;
         this.precoVenda = precoVenda;

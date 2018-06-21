@@ -2,10 +2,10 @@ package br.unicamp.laricaco;
 
 import javax.swing.*;
 
-public class JanelaAdministrador extends JFrame{
+public class JanelaAdministrador extends JFrame {
 
 
-    public JanelaAdministrador(){
+    public JanelaAdministrador() {
         super("Adiministrando ~o~");
 
     }

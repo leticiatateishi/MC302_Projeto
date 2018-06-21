@@ -1,5 +1,7 @@
 package br.unicamp.laricaco;
 
+import br.unicamp.laricaco.usuario.Usuario;
+
 import javax.swing.*;
 import java.awt.event.*;
 
@@ -41,7 +43,6 @@ public class JanelaLogin extends JFrame {
         this.setVisible(true);
     }
 
-
     class Entrar implements ActionListener {
 
         int ra, pin;
@@ -52,9 +53,8 @@ public class JanelaLogin extends JFrame {
             ra = Integer.parseInt(campoLogin.getText());
             pin = Integer.parseInt(String.valueOf(campoSenha.getPassword()));
 
-            usuario = Usuario.getUsuario(ra);
+            usuario = main.getGerenciadorUsuario().getUsuario(ra);
             if (usuario != null && usuario.getPin() == pin) {
-
                 JanelaPrincipal janela = new JanelaPrincipal(main, usuario);
                 JanelaLogin.this.setVisible(false);
                 janela.pack();
@@ -68,7 +68,6 @@ public class JanelaLogin extends JFrame {
                         JanelaLogin.this.setVisible(true);
                     }
                 });
-
             }
         }
     }

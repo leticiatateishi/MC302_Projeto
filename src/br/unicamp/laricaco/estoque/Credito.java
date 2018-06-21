@@ -1,4 +1,6 @@
-package br.unicamp.laricaco;
+package br.unicamp.laricaco.estoque;
+
+import br.unicamp.laricaco.usuario.Usuario;
 
 import java.util.Date;
 

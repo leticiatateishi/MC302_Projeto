@@ -1,22 +1,18 @@
-package br.unicamp.laricaco;
+package br.unicamp.laricaco.estoque;
+
+import br.unicamp.laricaco.LariCACoException;
+import br.unicamp.laricaco.usuario.Usuario;
 
 import java.util.Date;
 import java.util.HashMap;
 
-/**
- * Classe intermediária entre Transacao e Produtos, permitindo uma relação bidirecional entre usuário e produtos.
- */
-/*
- * Essa classe dispensa QuantidadeProdutos, já que não temos uma relação muito complexa para precisar de mais de uma
- * variável (inteiro quantidade).
- */
 public abstract class TransacaoEstoque extends Transacao {
 
-    protected final GerenciadorEstoque gerenciadorEstoque;
+    final GerenciadorEstoque gerenciadorEstoque;
 
-    protected final HashMap<Produto, Integer> produtos = new HashMap<>();
+    final HashMap<Produto, Integer> produtos = new HashMap<>();
 
-    public TransacaoEstoque(GerenciadorEstoque gerenciadorEstoque, Usuario usuario, Date data) {
+    TransacaoEstoque(GerenciadorEstoque gerenciadorEstoque, Usuario usuario, Date data) {
         super(usuario, data);
         this.gerenciadorEstoque = gerenciadorEstoque;
     }
@@ -34,12 +30,11 @@ public abstract class TransacaoEstoque extends Transacao {
         return valor;
     }
 
-    public boolean adicionarProduto(Produto produto, int quantidade) {
+    public void adicionarProduto(Produto produto, int quantidade) throws LariCACoException {
         if (produto.isEspecial() || quantidade <= 0) {
-            return false;
+            throw new LariCACoException("A quantidade resultante não deve ser negativa!");
         }
         produtos.put(produto, quantidade + produtos.getOrDefault(produto, 0));
-        return true;
     }
 
     public boolean removerProduto(Produto produto, int quantidade) {

@@ -1,10 +1,13 @@
 package br.unicamp.laricaco;
 
+import br.unicamp.laricaco.estoque.Produto;
+import br.unicamp.laricaco.usuario.Usuario;
+import br.unicamp.laricaco.usuario.UsuarioAdministrador;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.concurrent.Flow;
 
 public class JanelaPrincipal extends JFrame {
 
@@ -13,14 +16,12 @@ public class JanelaPrincipal extends JFrame {
     private JLabel ra, saldo;
     private JCheckBox cartaoCredito, cartaoDebito, dinheiro;
     private ArrayList<Produto> carrinho;
-    private float total;
     private JLabel totalLabel;
 
     public JanelaPrincipal(Main main, Usuario usuario) {
 
         super("LariCACo!");
         this.usuario = usuario;
-        total = 0;
         totalLabel = new JLabel("R$ 0.00");
 
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
@@ -68,13 +69,15 @@ public class JanelaPrincipal extends JFrame {
             JButton botaoCarrinho = new JButton(new ImageIcon("images/carrinho.png"));
             botaoCarrinho.addActionListener(e -> {
                 int qnt = Integer.parseInt(quantidade.getText());
-                for (int i = 0; i < qnt; i++) {
-                    usuario.getCarrinho().adicionarProduto(p);
+                try {
+                    usuario.getCarrinho().adicionarProduto(p, qnt);
+                    totalLabel.setText("R$ " + Float.toString(usuario.getCarrinho().getValor()));
+                    qntEmEstoque.setText((Integer.parseInt(qntEmEstoque.getText()) - qnt) + "");
+                } catch (LariCACoException e1) {
+                    JOptionPane.showMessageDialog(this, e1.getMessage(), "Erro!", JOptionPane.ERROR_MESSAGE);
+                } finally {
+                    quantidade.setText("");
                 }
-                total += p.getPrecoVenda() * qnt;
-                totalLabel.setText("R$ " + Float.toString(total));
-                quantidade.setText("");
-                qntEmEstoque.setText((Integer.parseInt(qntEmEstoque.getText()) - qnt) + "");
 
                 // NAO PODE FINALIZAR SE N TEM DINHEIRO
                 // SUBTRAIR DO ESTOQUE

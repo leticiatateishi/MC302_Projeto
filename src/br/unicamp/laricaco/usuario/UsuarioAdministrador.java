@@ -1,15 +1,18 @@
-package br.unicamp.laricaco;
+package br.unicamp.laricaco.usuario;
+
+import br.unicamp.laricaco.Main;
+import br.unicamp.laricaco.estoque.Reposicao;
 
 import java.util.Date;
 
 public class UsuarioAdministrador extends Usuario {
 
-    public UsuarioAdministrador(Main main, int ra, int pin, String email) {
+    UsuarioAdministrador(Main main, int ra, int pin, String email) {
         super(main, ra, pin, email);
     }
 
     public Reposicao fazerReposicao() {
-        Reposicao reposicao = new Reposicao(main.getGerenciadorEstoque(), this, new Date());
+        Reposicao reposicao = main.getGerenciadorEstoque().criarReposicao(this, new Date());
         /* Adicionamos à lista de transações do usuário */
         transacoes.add(reposicao);
         return reposicao;

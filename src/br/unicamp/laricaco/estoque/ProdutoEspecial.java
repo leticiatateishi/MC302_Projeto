@@ -1,12 +1,15 @@
-package br.unicamp.laricaco;
+package br.unicamp.laricaco.estoque;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ProdutoEspecial extends Produto {
 
     private final HashSet<Produto> produtoEspecial = new HashSet<>();
 
-    public ProdutoEspecial(GerenciadorEstoque gerenciadorEstoque, String nome, float precoVenda, float precoCusto, int quantidadePorCaixa) {
+    ProdutoEspecial(GerenciadorEstoque gerenciadorEstoque,
+                           String nome, float precoVenda, float precoCusto, int quantidadePorCaixa) {
         super(gerenciadorEstoque, nome, precoVenda, precoCusto, quantidadePorCaixa);
     }
 
@@ -22,7 +25,8 @@ public class ProdutoEspecial extends Produto {
     }
 
     public Produto adicionarVariacaoProduto(String nome) {
-        Produto produto = new Produto(gerenciadorEstoque, nome, getPrecoVenda(), getPrecoCusto(), getQuantidadePorCaixa());
+        Produto produto = new Produto(
+                gerenciadorEstoque, nome, getPrecoVenda(), getPrecoCusto(), getQuantidadePorCaixa());
         produtoEspecial.add(produto);
         return produto;
     }
