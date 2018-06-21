@@ -1,28 +1,26 @@
 package br.unicamp.laricaco;
 
-import java.util.*;
-
 public class Produto {
 
-    private static final ArrayList<TransacaoEstoque> transacoes = new ArrayList<>();
-    private static final HashSet<Produto> produtos = new HashSet<>();
+    protected final GerenciadorEstoque gerenciadorEstoque;
 
     private final String nome;
     private float precoVenda, precoCusto;
     private int quantidadePorCaixa;
 
-    public Produto(String nome, float precoVenda, float precoCusto, int quantidadePorCaixa) {
+    Produto(GerenciadorEstoque gerenciadorEstoque,
+                   String nome, float precoVenda, float precoCusto, int quantidadePorCaixa) {
+        this.gerenciadorEstoque = gerenciadorEstoque;
         this.nome = nome;
         this.precoVenda = precoVenda;
         this.precoCusto = precoCusto;
         this.quantidadePorCaixa = quantidadePorCaixa;
-        produtos.add(this);
     }
 
     public int getEstoque() {
         int estoque = 0;
 
-        for (TransacaoEstoque transacaoEstoque : transacoes) {
+        for (TransacaoEstoque transacaoEstoque : gerenciadorEstoque.getTransacoes(this)) {
             if (transacaoEstoque instanceof Compra) {
                 estoque -= transacaoEstoque.quantidadeProduto(this);
             } else if (transacaoEstoque instanceof Reposicao) {
@@ -79,13 +77,5 @@ public class Produto {
     public String toString() {
         return "\t* " + getNome() + " (R$" + getPrecoCusto() + "/caixa com " + getQuantidadePorCaixa() + "unidades)"
                 + "vendido a preco unitario de R$" + getPrecoVenda() + ". Estoque atual: " + getEstoque() + "\n";
-    }
-
-    public static void adicionarTransacao(TransacaoEstoque transacaoEstoque) {
-        transacoes.add(transacaoEstoque);
-    }
-
-    public static Set<Produto> getProdutos() {
-        return Collections.unmodifiableSet(produtos);
     }
 }

@@ -12,10 +12,11 @@ public class JanelaPrincipal extends JFrame {
     private Usuario usuario;
     private JLabel ra, saldo;
     private JCheckBox cartaoCredito, cartaoDebito, dinheiro;
+    private ArrayList<Produto> carrinho;
     private float total;
     private JLabel totalLabel;
 
-    public JanelaPrincipal(Usuario usuario) {
+    public JanelaPrincipal(Main main, Usuario usuario) {
 
         super("LariCACo!");
         this.usuario = usuario;
@@ -55,12 +56,14 @@ public class JanelaPrincipal extends JFrame {
         JScrollPane produtosScroll = new JScrollPane(produtosPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         produtosScroll.setPreferredSize(new Dimension(500, 300));
 
-        for (Produto p : Produto.getProdutos()) {
+        for (Produto p : main.getGerenciadorEstoque().getProdutos()) {
 
             JLabel qntEmEstoque = new JLabel(p.getNome() + " R$" + p.getPrecoVenda() +
-                                            "                                    " + p.getEstoque());
+                    "                                    " + p.getEstoque());
             JPanel produtoPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
             produtoPanel.add(qntEmEstoque);
+            produtoPanel.add(new JLabel(p.getNome() + " R$" + p.getPrecoVenda() +
+                    "                                    " + p.getEstoque()));
             JTextField quantidade = new JTextField(8);
             JButton botaoCarrinho = new JButton(new ImageIcon("images/carrinho.png"));
             botaoCarrinho.addActionListener(e -> {
@@ -150,8 +153,6 @@ public class JanelaPrincipal extends JFrame {
 
         @Override
         public void itemStateChanged(ItemEvent e) {
-
         }
     }
-
 }

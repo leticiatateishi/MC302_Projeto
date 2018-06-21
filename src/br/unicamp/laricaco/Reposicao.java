@@ -13,8 +13,8 @@ public class Reposicao extends TransacaoEstoque {
      * @param usuario o usuário realizando a transação
      * @param data    a data da transação
      */
-    public Reposicao(UsuarioAdministrador usuario, Date data) {
-        super(usuario, data);
+    public Reposicao(GerenciadorEstoque gerenciadorEstoque, UsuarioAdministrador usuario, Date data) {
+        super(gerenciadorEstoque, usuario, data);
     }
 
     @Override

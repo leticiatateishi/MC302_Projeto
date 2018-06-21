@@ -5,12 +5,15 @@ import java.awt.event.*;
 
 public class JanelaLogin extends JFrame {
 
+    private final Main main;
+
     private JTextField campoLogin;
     private JPasswordField campoSenha;
 
-    public JanelaLogin() {
-
+    public JanelaLogin(Main main) {
         super("Login");
+
+        this.main = main;
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE); //Nao queremos que os usuarios fechem o programa
 
 
@@ -52,7 +55,7 @@ public class JanelaLogin extends JFrame {
             usuario = Usuario.getUsuario(ra);
             if (usuario != null && usuario.getPin() == pin) {
 
-                JanelaPrincipal janela = new JanelaPrincipal(usuario);
+                JanelaPrincipal janela = new JanelaPrincipal(main, usuario);
                 JanelaLogin.this.setVisible(false);
                 janela.pack();
                 janela.setVisible(true);

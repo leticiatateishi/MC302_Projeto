@@ -2,18 +2,29 @@ package br.unicamp.laricaco;
 
 public class Main {
 
+    private final GerenciadorEstoque gerenciadorEstoque;
+
+    public Main() {
+        this.gerenciadorEstoque = new GerenciadorEstoque();
+    }
+
+    public GerenciadorEstoque getGerenciadorEstoque() {
+        return gerenciadorEstoque;
+    }
+
     public static void main(String[] args) {
+        Main main = new Main();
+        GerenciadorEstoque gerenciadorEstoque = main.getGerenciadorEstoque();
+
         /*
          * Cadastro do usuário administrador no sistema.
          */
+        UsuarioAdministrador administrador = new UsuarioAdministrador(main, 186154, 1212, "rafael@gmail.com");
 
-        GerenciadorUsuario gerenciador = new GerenciadorUsuario();
-        UsuarioAdministrador administrador = new UsuarioAdministrador(186154, 1212, "rafael@gmail.com");
-
-        Produto amendoim = new Produto("Amendoim", 0.5f, 17.5f, 50);
-        Produto pirulito = new Produto("Pirulito", 0.25f, 10f, 50);
-        Produto pacoca = new Produto("Pacoca", 0.5f, 25f, 60);
-        ProdutoEspecial trento = new ProdutoEspecial("Trento", 1.25f, 15f, 16);
+        Produto amendoim = new Produto(gerenciadorEstoque, "Amendoim", 0.5f, 17.5f, 50);
+        Produto pirulito = new Produto(gerenciadorEstoque, "Pirulito", 0.25f, 10f, 50);
+        Produto pacoca = new Produto(gerenciadorEstoque, "Pacoca", 0.5f, 25f, 60);
+        ProdutoEspecial trento = new ProdutoEspecial(gerenciadorEstoque, "Trento", 1.25f, 15f, 16);
         Produto trentoBranco = trento.adicionarVariacaoProduto("branco");
         Produto trentoAmargo = trento.adicionarVariacaoProduto("amargo");
 
@@ -28,8 +39,8 @@ public class Main {
         /*
          * Cadastro de outros usuários no sistema.
          */
-        Usuario usuario1 = new Usuario(201454, 1020, "leticia@gmail.com");
-        Usuario usuario2 = new Usuario(198625, 1234, "gustavo@gmail.com");
+        Usuario usuario1 = new Usuario(main, 201454, 1020, "leticia@gmail.com");
+        Usuario usuario2 = new Usuario(main, 198625, 1234, "gustavo@gmail.com");
 
         usuario1.creditar(20.0f);
         System.out.println("Saldo do usuário com R.A. " + usuario1.getRA() + ": R$" + usuario1.getSaldo());
@@ -77,7 +88,7 @@ public class Main {
         System.out.println(usuario1.alterarSenha(1021, 5555));
         System.out.println(usuario1.alterarSenha(1020, 5555));
 
-        JanelaLogin janela = new JanelaLogin();
+        JanelaLogin janela = new JanelaLogin(main);
         janela.pack();
         janela.setVisible(true);
     }

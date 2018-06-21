@@ -6,8 +6,8 @@ public class ProdutoEspecial extends Produto {
 
     private final HashSet<Produto> produtoEspecial = new HashSet<>();
 
-    public ProdutoEspecial(String nome, float precoVenda, float precoCusto, int quantidadePorCaixa) {
-        super(nome, precoVenda, precoCusto, quantidadePorCaixa);
+    public ProdutoEspecial(GerenciadorEstoque gerenciadorEstoque, String nome, float precoVenda, float precoCusto, int quantidadePorCaixa) {
+        super(gerenciadorEstoque, nome, precoVenda, precoCusto, quantidadePorCaixa);
     }
 
     @Override
@@ -22,7 +22,7 @@ public class ProdutoEspecial extends Produto {
     }
 
     public Produto adicionarVariacaoProduto(String nome) {
-        Produto produto = new Produto(nome, getPrecoVenda(), getPrecoCusto(), getQuantidadePorCaixa());
+        Produto produto = new Produto(gerenciadorEstoque, nome, getPrecoVenda(), getPrecoCusto(), getQuantidadePorCaixa());
         produtoEspecial.add(produto);
         return produto;
     }

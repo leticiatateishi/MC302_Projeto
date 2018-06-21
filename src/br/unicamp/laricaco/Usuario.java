@@ -21,6 +21,8 @@ public class Usuario {
      */
     private static final Random gerador = new Random(System.currentTimeMillis());
 
+    protected final Main main;
+
     /**
      * Variável que guardará as transações executadas pelo usuário. Deverá ser mantida a ordem, ou seja, mais novo deve
      * vir primeiro ou por último. Isso deve ser definido na implementação.
@@ -69,7 +71,8 @@ public class Usuario {
      * @param email e-mail do usuário
      * @throws IllegalArgumentException caso o RA já exista na lista de RAs registrados.
      */
-    public Usuario(int ra, int pin, String email) /*throws IllegalArgumentException, IllegalStateException*/ {
+    public Usuario(Main main, int ra, int pin, String email) {
+        this.main = main;
         this.ra = ra;
         this.pin = pin;
         this.email = email;
@@ -148,7 +151,7 @@ public class Usuario {
      * que é compra e o que não é.
      */
     public Compra fazerCompra() {
-        Compra compra = new Compra(this, new Date());
+        Compra compra = new Compra(main.getGerenciadorEstoque(), this, new Date());
         /* Adicionamos a transação à lista de transações do usuário */
         transacoes.add(compra);
         return compra;
@@ -222,6 +225,7 @@ public class Usuario {
     /**
      * Classe que controla o código de alteração de senha, invalidando-o caso o número de tentativas seja ultrapassado.
      */
+
 
     public class CodigoAlteracao {
 
