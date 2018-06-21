@@ -63,6 +63,8 @@ public class Usuario {
      */
     private CodigoAlteracao esqueciSenha = null;
 
+    private Carrinho carrinho;
+
     /**
      * Construtor padrão da classe usuário. Deverá salvar o aluno no banco de dados e, se já existe, lançar um erro
      * como IllegalArgumentException, informando a chamada do construtor que o RA é inválido. O trecho "throws" implica
@@ -88,6 +90,7 @@ public class Usuario {
         this.ra = ra;
         this.pin = pin;
         this.email = email;
+        this.carrinho = new Carrinho();
         /* Adicionamos o usuário à lista de usuários */
         usuarios.add(this);
     }
@@ -211,6 +214,10 @@ public class Usuario {
         }
 
         return saldo;
+    }
+
+    public Carrinho getCarrinho() {
+        return carrinho;
     }
 
     @Override

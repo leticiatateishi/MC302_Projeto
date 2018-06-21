@@ -12,7 +12,6 @@ public class JanelaPrincipal extends JFrame {
     private Usuario usuario;
     private JLabel ra, saldo;
     private JCheckBox cartaoCredito, cartaoDebito, dinheiro;
-    private ArrayList <Produto> carrinho;
     private float total;
     private JLabel totalLabel;
 
@@ -20,7 +19,6 @@ public class JanelaPrincipal extends JFrame {
 
         super("LariCACo!");
         this.usuario = usuario;
-        carrinho = new ArrayList<>();
         total = 0;
         totalLabel = new JLabel("R$ 0.00");
 
@@ -55,20 +53,25 @@ public class JanelaPrincipal extends JFrame {
         JPanel produtosPanel = new JPanel();
         produtosPanel.setLayout(new BoxLayout(produtosPanel, BoxLayout.Y_AXIS));
         JScrollPane produtosScroll = new JScrollPane(produtosPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        produtosScroll.setPreferredSize(new Dimension(500,300));
+        produtosScroll.setPreferredSize(new Dimension(500, 300));
 
-        for(Produto p: Produto.getProdutos()){
+        for (Produto p : Produto.getProdutos()) {
 
+            JLabel qntEmEstoque = new JLabel(p.getNome() + " R$" + p.getPrecoVenda() +
+                                            "                                    " + p.getEstoque());
             JPanel produtoPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-            produtoPanel.add(new JLabel(p.getNome() + " R$" + p.getPrecoVenda() +
-                                        "                                    " + p.getEstoque()));
+            produtoPanel.add(qntEmEstoque);
             JTextField quantidade = new JTextField(8);
             JButton botaoCarrinho = new JButton(new ImageIcon("images/carrinho.png"));
             botaoCarrinho.addActionListener(e -> {
-                carrinho.add(p);
-                total += p.getPrecoVenda() * Float.parseFloat(quantidade.getText());
+                int qnt = Integer.parseInt(quantidade.getText());
+                for (int i = 0; i < qnt; i++) {
+                    usuario.getCarrinho().adicionarProduto(p);
+                }
+                total += p.getPrecoVenda() * qnt;
                 totalLabel.setText("R$ " + Float.toString(total));
                 quantidade.setText("");
+                qntEmEstoque.setText((Integer.parseInt(qntEmEstoque.getText()) - qnt) + "");
 
                 // NAO PODE FINALIZAR SE N TEM DINHEIRO
                 // SUBTRAIR DO ESTOQUE
@@ -82,7 +85,9 @@ public class JanelaPrincipal extends JFrame {
 
         JPanel finalizar = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         finalizar.add(totalLabel);
-        finalizar.add(new JButton("finalizar"));
+        finalizar.add(new JButton("Esvaziar Carrinho")); //volta os itens pro estoque
+        finalizar.add(new JButton("Finalizar Compra")); //subtrai do estoque de fato
+
 
         getContentPane().add(dados);
         getContentPane().add(deposito);
@@ -141,7 +146,7 @@ public class JanelaPrincipal extends JFrame {
         }
     }
 
-    class CheckBoxHandler implements ItemListener{
+    class CheckBoxHandler implements ItemListener {
 
         @Override
         public void itemStateChanged(ItemEvent e) {
