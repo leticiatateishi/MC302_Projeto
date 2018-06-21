@@ -22,23 +22,6 @@ public class Usuario {
     private static final Random gerador = new Random(System.currentTimeMillis());
 
     /**
-     * Variável estática que guardará todos os usuários registrados (banco de dados na memória). É estático pois está
-     * atrelado à classe e não a cada objeto usuário. Através dos **construtores** iremos manter o banco de dados.
-     * <p>
-     * HashSet é uma coleção (estrutura de dados) que utiliza hashing pra definir igualdade. Não poderá haver 2 usuários
-     * com o mesmo hash. O hash de cada objeto é calculado pelo método hashCode() que será sobreescrito do objeto-base
-     * Object. Consequentemente, devemos sobreescrever o método equals(Object) para definir a igualdade de maneira
-     * consistente.
-     * Isso é necessário para mantermos apenas uma cópia do objeto na memória (ou seja, não devemos possuir dois
-     * usuários com mesmo RA, e essa estrutura irá garantir isso). No entanto, precisamos tomar cuidado na hora de
-     * adicionar itens, o método add(Usuario) do HashSet só irá retornar true se a estrutura foi modificada, retornará
-     * false se o objeto não foi inserido por ser um duplicate.
-     * Mais informações: https://en.wikipedia.org/wiki/Java_hashCode%28%29 e
-     * https://www.javaworld.com/article/2074996/hashcode-and-equals-method-in-java-object---a-pragmatic-concept.html
-     */
-    private final static HashSet<Usuario> usuarios = new HashSet<>(); //Passar para o servidor
-
-    /**
      * Variável que guardará as transações executadas pelo usuário. Deverá ser mantida a ordem, ou seja, mais novo deve
      * vir primeiro ou por último. Isso deve ser definido na implementação.
      */
@@ -91,8 +74,6 @@ public class Usuario {
         this.pin = pin;
         this.email = email;
         this.carrinho = new Carrinho();
-        /* Adicionamos o usuário à lista de usuários */
-        usuarios.add(this);
     }
 
     /**
@@ -104,6 +85,8 @@ public class Usuario {
         this.esqueciSenha = new CodigoAlteracao();
 
         // TODO: Mandar o codigo no email
+        // TODO AAAAAAAAAAAAAAAAAAA :)
+
     }
 
 
@@ -237,25 +220,8 @@ public class Usuario {
     }
 
     /**
-     * @return conjunto não modificável de usuários
-     * @see Collections#unmodifiableSet(Set) conjunto não modificável
-     */
-    public static Set<Usuario> getUsuarios() {
-        return Collections.unmodifiableSet(usuarios);
-    }
-
-    /**
      * Classe que controla o código de alteração de senha, invalidando-o caso o número de tentativas seja ultrapassado.
      */
-
-    //Passar para o servidor:
-    public static Usuario getUsuario(int ra){
-
-        for(Usuario i: usuarios){
-            if(i.ra == ra) return i;
-        }
-        return null;
-    }
 
     public class CodigoAlteracao {
 

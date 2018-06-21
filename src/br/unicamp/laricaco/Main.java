@@ -6,6 +6,8 @@ public class Main {
         /*
          * Cadastro do usuário administrador no sistema.
          */
+
+        GerenciadorUsuario gerenciador = new GerenciadorUsuario();
         UsuarioAdministrador administrador = new UsuarioAdministrador(186154, 1212, "rafael@gmail.com");
 
         Produto amendoim = new Produto("Amendoim", 0.5f, 17.5f, 50);
