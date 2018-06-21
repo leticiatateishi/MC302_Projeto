@@ -24,15 +24,24 @@ public abstract class TransacaoEstoque extends Transacao {
         float valor = 0.0f;
 
         for (Produto produto : gerenciadorEstoque.getProdutos()) {
-            valor += getValor(produto);
+            if (produto.isEspecial()) {
+                for(Produto p: ((ProdutoEspecial)produto).getVariacoes()){
+                    valor += getValor(p);
+                }
+            }else{
+                valor += getValor(produto);
+            }
         }
 
         return valor;
     }
 
     public void adicionarProduto(Produto produto, int quantidade) throws LariCACoException {
-        if (produto.isEspecial() || quantidade <= 0) {
+        if (quantidade <= 0) {
             throw new LariCACoException("A quantidade resultante não deve ser negativa!");
+        }
+        if(produto.isEspecial()){
+            throw new LariCACoException("Produto Especial nao pode ser comprado!");
         }
         produtos.put(produto, quantidade + produtos.getOrDefault(produto, 0));
     }

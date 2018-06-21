@@ -1,6 +1,7 @@
 package br.unicamp.laricaco;
 
 import br.unicamp.laricaco.estoque.Produto;
+import br.unicamp.laricaco.estoque.ProdutoEspecial;
 import br.unicamp.laricaco.usuario.Usuario;
 import br.unicamp.laricaco.usuario.UsuarioAdministrador;
 
@@ -57,14 +58,26 @@ public class JanelaPrincipal extends JFrame {
         JScrollPane produtosScroll = new JScrollPane(produtosPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         produtosScroll.setPreferredSize(new Dimension(500, 300));
 
-        for (Produto p : main.getGerenciadorEstoque().getProdutos()) {
+        //Para nao dar ruim com produto especial:
+        ArrayList <Produto> produtos = new ArrayList<>();
+        for (Produto p: main.getGerenciadorEstoque().getProdutos()){
+            if(!p.isEspecial()){
+                produtos.add(p);
+            }
+            else{
+                produtos.addAll(((ProdutoEspecial) p).getVariacoes());
+            }
+        }
 
-            JLabel qntEmEstoque = new JLabel(p.getNome() + " R$" + p.getPrecoVenda() +
-                    "                                    " + p.getEstoque());
+        ArrayList<JLabel> labels = new ArrayList<>();
+        for (Produto p : produtos) {
+
+            JLabel informacaoProduto = new JLabel(p.getNome() + " R$" + p.getPrecoVenda() +
+                    "                                    ");
+            JLabel qntEmEstoque = new JLabel("" + p.getEstoque());
             JPanel produtoPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            produtoPanel.add(informacaoProduto);
             produtoPanel.add(qntEmEstoque);
-            produtoPanel.add(new JLabel(p.getNome() + " R$" + p.getPrecoVenda() +
-                    "                                    " + p.getEstoque()));
             JTextField quantidade = new JTextField(8);
             JButton botaoCarrinho = new JButton(new ImageIcon("images/carrinho.png"));
             botaoCarrinho.addActionListener(e -> {
@@ -78,10 +91,6 @@ public class JanelaPrincipal extends JFrame {
                 } finally {
                     quantidade.setText("");
                 }
-
-                // NAO PODE FINALIZAR SE N TEM DINHEIRO
-                // SUBTRAIR DO ESTOQUE
-                // NAO PODE ADD AO CARRINHO SE NAO TIVER NO ESTOQUE
             });
 
             produtoPanel.add(quantidade);
@@ -91,8 +100,29 @@ public class JanelaPrincipal extends JFrame {
 
         JPanel finalizar = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         finalizar.add(totalLabel);
-        finalizar.add(new JButton("Esvaziar Carrinho")); //volta os itens pro estoque
-        finalizar.add(new JButton("Finalizar Compra")); //subtrai do estoque de fato
+        JButton esvaziarCarrinho = new JButton("Esvaziar Carrinho");
+        finalizar.add(esvaziarCarrinho); //volta os itens pro estoque
+        JButton finalizarCompra = new JButton("Finalizar Compra");
+        finalizar.add(finalizarCompra); //subtrai do estoque de fato
+
+        esvaziarCarrinho.addActionListener(e -> {
+            usuario.getCarrinho().esvaziarCarrinho();
+            totalLabel.setText("R$ " + Float.toString(usuario.getCarrinho().getValor()));
+            //voltar quantidade do disponivel
+        });
+
+        finalizarCompra.addActionListener(e -> {
+            try {
+                usuario.getCarrinho().finalizarCompra();
+                totalLabel.setText(("R$ 0.00"));
+                saldo.setText("Saldo: " + usuario.getSaldo());
+                if(usuario.getSaldo() < 0){
+                    JOptionPane.showMessageDialog(this, "Não compre fiado!", "Fiado", JOptionPane.WARNING_MESSAGE);
+                }
+            }catch (LariCACoException e1){
+                JOptionPane.showMessageDialog(this, e1.getMessage(), "Erro!", JOptionPane.ERROR_MESSAGE);
+            }
+        });
 
 
         getContentPane().add(dados);
