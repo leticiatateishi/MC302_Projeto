@@ -3,6 +3,8 @@ package br.unicamp.laricaco;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.concurrent.Flow;
 
 public class JanelaPrincipal extends JFrame {
 
@@ -10,11 +12,17 @@ public class JanelaPrincipal extends JFrame {
     private Usuario usuario;
     private JLabel ra, saldo;
     private JCheckBox cartaoCredito, cartaoDebito, dinheiro;
+    private ArrayList <Produto> carrinho;
+    private float total;
+    private JLabel totalLabel;
 
     public JanelaPrincipal(Usuario usuario) {
 
         super("LariCACo!");
         this.usuario = usuario;
+        carrinho = new ArrayList<>();
+        total = 0;
+        totalLabel = new JLabel("R$ 0.00");
 
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         JPanel dados = new JPanel();
@@ -47,12 +55,40 @@ public class JanelaPrincipal extends JFrame {
         JPanel produtosPanel = new JPanel();
         produtosPanel.setLayout(new BoxLayout(produtosPanel, BoxLayout.Y_AXIS));
         JScrollPane produtosScroll = new JScrollPane(produtosPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        produtosScroll.setPreferredSize(new Dimension(500,300));
 
+        for(Produto p: Produto.getProdutos()){
 
+            JPanel produtoPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            produtoPanel.add(new JLabel(p.getNome() + " R$" + p.getPrecoVenda() +
+                                        "                                    " + p.getEstoque()));
+            JTextField quantidade = new JTextField(8);
+            JButton botaoCarrinho = new JButton(new ImageIcon("images/carrinho.png"));
+            botaoCarrinho.addActionListener(e -> {
+                carrinho.add(p);
+                total += p.getPrecoVenda() * Float.parseFloat(quantidade.getText());
+                totalLabel.setText("R$ " + Float.toString(total));
+                quantidade.setText("");
+
+                // NAO PODE FINALIZAR SE N TEM DINHEIRO
+                // SUBTRAIR DO ESTOQUE
+                // NAO PODE ADD AO CARRINHO SE NAO TIVER NO ESTOQUE
+            });
+
+            produtoPanel.add(quantidade);
+            produtoPanel.add(botaoCarrinho);
+            produtosPanel.add(produtoPanel);
+        }
+
+        JPanel finalizar = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        finalizar.add(totalLabel);
+        finalizar.add(new JButton("finalizar"));
 
         getContentPane().add(dados);
         getContentPane().add(deposito);
         getContentPane().add(checkBoxes);
+        getContentPane().add(produtosScroll);
+        getContentPane().add(finalizar);
 
         if (usuario instanceof UsuarioAdministrador) {
             JButton administrar = new JButton("Administrar");
