@@ -1,17 +1,20 @@
 package br.unicamp.laricaco.estoque;
 
-import br.unicamp.laricaco.LariCACoException;
+import br.unicamp.laricaco.utilidades.LariCACoException;
 import br.unicamp.laricaco.usuario.Usuario;
 
+import java.io.*;
 import java.util.Date;
 
 public class Carrinho extends TransacaoEstoque {
 
-    private final Usuario usuario;
-
     public Carrinho(Usuario usuario, GerenciadorEstoque gerenciadorEstoque) {
-        super(gerenciadorEstoque, usuario, new Date());
-        this.usuario = usuario;
+        super(null, gerenciadorEstoque, usuario, new Date());
+    }
+
+    @Override
+    public Tipo getTipo() {
+        throw new IllegalStateException("Carrinho não deve ser tratado como uma transação pois não foi finalizada.");
     }
 
     @Override
@@ -36,5 +39,10 @@ public class Carrinho extends TransacaoEstoque {
         Compra compra = gerenciadorEstoque.criarCompra(this);
         esvaziarCarrinho();
         return compra;
+    }
+
+    @Override
+    public void salvar(DataOutputStream outputStream) {
+        throw new IllegalStateException("Carrinho não deve ser tratado como uma transação pois não foi finalizada.");
     }
 }

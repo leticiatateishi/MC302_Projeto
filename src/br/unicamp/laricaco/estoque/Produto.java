@@ -1,8 +1,11 @@
 package br.unicamp.laricaco.estoque;
 
+import br.unicamp.laricaco.utilidades.*;
+
+import java.io.*;
 import java.util.List;
 
-public class Produto implements Comparable<Produto> {
+public class Produto implements Comparable<Produto>, Salvavel {
 
     protected final GerenciadorEstoque gerenciadorEstoque;
 
@@ -94,5 +97,30 @@ public class Produto implements Comparable<Produto> {
         if (getEstoque() < produto.getEstoque()) return -1;
         if (getEstoque() > produto.getEstoque()) return 1;
         return 0;
+    }
+
+    @Override
+    public void salvar(DataOutputStream outputStream) throws IOException {
+        outputStream.writeBoolean(isEspecial());
+        outputStream.writeUTF(nome);
+        outputStream.writeFloat(precoVenda);
+        outputStream.writeFloat(precoCusto);
+        outputStream.writeInt(quantidadePorCaixa);
+        outputStream.flush();
+    }
+
+    static Produto carregar(GerenciadorEstoque gerenciadorEstoque, DataInputStream inputStream) throws IOException {
+        boolean especial = inputStream.readBoolean();
+        String nome = inputStream.readUTF();
+        float precoVenda = inputStream.readFloat();
+        float precoCusto = inputStream.readFloat();
+        int quantidadePorcaixa = inputStream.readInt();
+
+        if (especial) {
+            return ProdutoEspecial.carregar(
+                    gerenciadorEstoque, inputStream, nome, precoVenda, precoCusto, quantidadePorcaixa);
+        } else {
+            return new Produto(gerenciadorEstoque, nome, precoVenda, precoCusto, quantidadePorcaixa);
+        }
     }
 }

@@ -1,4 +1,4 @@
-package br.unicamp.laricaco;
+package br.unicamp.laricaco.utilidades;
 
 public class LariCACoException extends Exception {
 

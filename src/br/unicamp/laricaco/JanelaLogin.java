@@ -1,8 +1,10 @@
 package br.unicamp.laricaco;
 
 import br.unicamp.laricaco.usuario.Usuario;
+import br.unicamp.laricaco.utilidades.*;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 
 public class JanelaLogin extends JFrame {
@@ -30,15 +32,22 @@ public class JanelaLogin extends JFrame {
         campoSenha = new JPasswordField(8);
         senha.setLabelFor(campoSenha);
 
+        JPanel botoes = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
         JButton entrar = new JButton("Entrar");
         entrar.addActionListener(new Entrar());
         entrar.setMnemonic(KeyEvent.VK_ENTER);
+        botoes.add(entrar);
+
+        JButton trocarSenha = new JButton("Esqueci PIN");
+        trocarSenha.addActionListener(new EsqueciSenha());
+        botoes.add(trocarSenha);
 
         panel.add(login);
         panel.add(campoLogin);
         panel.add(senha);
         panel.add(campoSenha);
-        panel.add(entrar);
+        panel.add(botoes);
         getContentPane().add(panel);
         this.setVisible(true);
     }
@@ -73,6 +82,28 @@ public class JanelaLogin extends JFrame {
                     JanelaLogin.this.setVisible(true);
                 }
             });
+        }
+    }
+
+    class EsqueciSenha implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Usuario usuario = main.getGerenciadorUsuario().getUsuario(Integer.parseInt(campoLogin.getText()));
+            if (usuario != null) {
+                try {
+                    JOptionPane.showMessageDialog(
+                            JanelaLogin.this,
+                            "Mostre esse código junto com seu RA ao administrador: " +
+                                    usuario.pedirTrocaSenha(JOptionPane.showInputDialog(usuario.getPergunta() + "?")),
+                            "Sucesso!",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+                } catch (LariCACoException e1) {
+                    JOptionPane.showMessageDialog(
+                            JanelaLogin.this, e1.getMessage(), "Erro!", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         }
     }
 }

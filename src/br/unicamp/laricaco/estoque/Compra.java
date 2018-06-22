@@ -1,15 +1,15 @@
 package br.unicamp.laricaco.estoque;
 
-import br.unicamp.laricaco.LariCACoException;
+import br.unicamp.laricaco.utilidades.LariCACoException;
 import br.unicamp.laricaco.usuario.Usuario;
 
+import java.io.*;
 import java.util.Date;
-import java.util.Map;
 
 public class Compra extends TransacaoEstoque {
 
     Compra(GerenciadorEstoque gerenciadorEstoque, Usuario usuario, Date data) {
-        super(gerenciadorEstoque, usuario, data);
+        super(Tipo.COMPRA, gerenciadorEstoque, usuario, data);
     }
 
     @Override
@@ -34,5 +34,11 @@ public class Compra extends TransacaoEstoque {
     @Override
     public String toString() {
         return "Compra realizada na data " + getData() + " por " + getUsuario() + " no valor de R$" + getValor();
+    }
+
+    @Override
+    public void salvar(DataOutputStream outputStream) throws IOException {
+        super.salvar(outputStream);
+        outputStream.flush();
     }
 }

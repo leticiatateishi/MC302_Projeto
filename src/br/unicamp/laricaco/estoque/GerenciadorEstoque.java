@@ -1,12 +1,13 @@
 package br.unicamp.laricaco.estoque;
 
-import br.unicamp.laricaco.LariCACoException;
-import br.unicamp.laricaco.usuario.UsuarioAdministrador;
+import br.unicamp.laricaco.usuario.*;
+import br.unicamp.laricaco.utilidades.*;
 
+import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class GerenciadorEstoque {
+public class GerenciadorEstoque implements Salvavel {
 
     private final ArrayList<TransacaoEstoque> transacoes = new ArrayList<>();
     private final HashSet<Produto> produtos = new HashSet<>();
@@ -121,9 +122,42 @@ public class GerenciadorEstoque {
             public int compare(Produto produto1, Produto produto2) {
                 int quantidadeVendida1 = produto1.getQuantidadeVendida();
                 int quantidadeVendida2 = produto2.getQuantidadeVendida();
-                return Integer.compare(quantidadeVendida1, quantidadeVendida2);
+                return Integer.compare(quantidadeVendida2, quantidadeVendida1);
             }
         });
-        return produtos.get(produtos.size()-1);
+        return produtos.get(0);
+    }
+
+    @Override
+    public void salvar(DataOutputStream outputStream) throws IOException {
+        /* Salvamos todos os produtos */
+        outputStream.writeInt(produtos.size());
+        outputStream.flush();
+        for (Produto produto : produtos) {
+            produto.salvar(outputStream);
+        }
+
+        /* Não salvamos transações pois é necessário o objeto usuário. */
+    }
+
+    public static GerenciadorEstoque carregar(DataInputStream inputStream) throws IOException {
+        GerenciadorEstoque gerenciadorEstoque = new GerenciadorEstoque();
+
+        for (int i = 0; i < inputStream.readInt(); i++) {
+            Produto produto = Produto.carregar(gerenciadorEstoque, inputStream);
+            gerenciadorEstoque.produtos.add(produto);
+        }
+
+        return gerenciadorEstoque;
+    }
+
+    /* Carregamos a transação enquanto lemos o usuário e já inserimos na lista de transações do gerenciador de
+     * estoque */
+    public Transacao carregarTransacao(Usuario usuario, DataInputStream inputStream) throws IOException {
+        Transacao transacao = Transacao.carregar(this, usuario, inputStream);
+        if (transacao.getTipo().isTransacaoEstoque()) {
+            transacoes.add((TransacaoEstoque) transacao);
+        }
+        return transacao;
     }
 }

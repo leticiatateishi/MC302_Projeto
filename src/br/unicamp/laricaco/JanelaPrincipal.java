@@ -4,6 +4,7 @@ import br.unicamp.laricaco.estoque.Produto;
 import br.unicamp.laricaco.estoque.ProdutoEspecial;
 import br.unicamp.laricaco.usuario.Usuario;
 import br.unicamp.laricaco.usuario.UsuarioAdministrador;
+import br.unicamp.laricaco.utilidades.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -60,12 +61,11 @@ public class JanelaPrincipal extends JFrame {
         produtosScroll.setPreferredSize(new Dimension(500, 300));
 
         //Para nao dar ruim com produto especial:
-        ArrayList <Produto> produtos = new ArrayList<>();
-        for (Produto p: main.getGerenciadorEstoque().getProdutos()){
-            if(!p.isEspecial()){
+        ArrayList<Produto> produtos = new ArrayList<>();
+        for (Produto p : main.getGerenciadorEstoque().getProdutos()) {
+            if (!p.isEspecial()) {
                 produtos.add(p);
-            }
-            else{
+            } else {
                 produtos.addAll(((ProdutoEspecial) p).getVariacoes());
             }
         }
@@ -118,10 +118,10 @@ public class JanelaPrincipal extends JFrame {
                 usuario.getCarrinho().finalizarCompra();
                 totalLabel.setText(("R$ 0.00"));
                 saldo.setText("Saldo: " + usuario.getSaldo());
-                if(usuario.getSaldo() < 0){
+                if (usuario.getSaldo() < 0) {
                     JOptionPane.showMessageDialog(this, "Não compre fiado!", "Fiado", JOptionPane.WARNING_MESSAGE);
                 }
-            }catch (LariCACoException e1){
+            } catch (LariCACoException e1) {
                 JOptionPane.showMessageDialog(this, e1.getMessage(), "Erro!", JOptionPane.ERROR_MESSAGE);
             }
         });

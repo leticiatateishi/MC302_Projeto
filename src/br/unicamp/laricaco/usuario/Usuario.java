@@ -5,14 +5,12 @@ import br.unicamp.laricaco.estoque.Carrinho;
 import br.unicamp.laricaco.estoque.Compra;
 import br.unicamp.laricaco.estoque.Credito;
 import br.unicamp.laricaco.estoque.Transacao;
+import br.unicamp.laricaco.utilidades.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Random;
+import java.io.*;
+import java.util.*;
 
-public class Usuario {
-
-    private static final Random gerador = new Random(System.currentTimeMillis());
+public class Usuario implements Salvavel {
 
     /* Estará disponível às classes que estão na pasta usuário */
     final Main main;
@@ -20,39 +18,21 @@ public class Usuario {
 
     private final int ra;
     private int pin;
-    private String email;
+    private String pergunta, resposta;
 
-    private CodigoAlteracao esqueciSenha = null;
     private Carrinho carrinho;
 
-    Usuario(Main main, int ra, int pin, String email) {
+    Usuario(Main main, int ra, int pin, String pergunta, String resposta) {
         this.main = main;
         this.ra = ra;
         this.pin = pin;
-        this.email = email;
+        this.pergunta = pergunta;
+        this.resposta = resposta;
         this.carrinho = new Carrinho(this, main.getGerenciadorEstoque());
     }
 
-    public void pedirTrocaSenha() {
-        this.esqueciSenha = new CodigoAlteracao();
-
-        // TODO: Mandar o codigo no email
-        // TODO AAAAAAAAAAAAAAAAAAA :)
-
-    }
-
-    public boolean alterarSenha(String codigo, int pin) {
-        if (esqueciSenha == null || pin < 0 || pin > 9_999 || !esqueciSenha.podeRealizarTentativa() ||
-                !esqueciSenha.realizarTentativa(Integer.valueOf(codigo))) {
-            return false;
-        }
-
-        this.pin = pin;
-        return true;
-    }
-
-    public boolean podeAlterarSenha() {
-        return esqueciSenha != null && esqueciSenha.podeRealizarTentativa();
+    public int pedirTrocaSenha(String resposta) throws LariCACoException {
+        return main.getGerenciadorUsuario().pedirTrocaSenha(this, resposta);
     }
 
     public boolean alterarSenha(int antiga, int nova) {
@@ -61,6 +41,10 @@ public class Usuario {
             return true;
         }
         return false;
+    }
+
+    void trocarSenha(int pin) {
+        this.pin = pin;
     }
 
     public Carrinho getCarrinho() {
@@ -86,11 +70,15 @@ public class Usuario {
         return pin;
     }
 
-    public String getEmail() {
-        return email;
+    public String getPergunta() {
+        return pergunta;
     }
 
-    public boolean isAdmin() {
+    String getResposta() {
+        return resposta;
+    }
+
+    public boolean isAdministrador() {
         return false;
     }
 
@@ -121,37 +109,50 @@ public class Usuario {
 
     @Override
     public String toString() {
-        return "R.A.: " + getRA() + ", e-mail: " + getEmail();
+        return "R.A.: " + getRA();
     }
 
-    public class CodigoAlteracao {
+    @Override
+    public void salvar(DataOutputStream outputStream) throws IOException {
+        outputStream.writeInt(ra);
+        outputStream.writeInt(pin);
+        outputStream.writeUTF(pergunta);
+        outputStream.writeUTF(resposta);
+        outputStream.writeBoolean(isAdministrador());
 
-        private static final int QUANTIDADE_MAXIMA = 3;
-
-        private final int codigo;
-        private int tentativas = 0;
-
-        private CodigoAlteracao() {
-            this.codigo = gerador.nextInt(100_000 - 10_000) + 10_000;
-        }
-
-        public boolean podeRealizarTentativa() {
-            return tentativas <= 3;
-        }
-
-        public boolean realizarTentativa(int codigo) {
-            if (!podeRealizarTentativa()) {
-                return false;
+        ArrayList<Transacao> creditos = new ArrayList<>();
+        for (Transacao transacao : transacoes) {
+            /* As transações de estoque serão guardadas pelo gerenciador de estoque */
+            if (transacao.getTipo() == Transacao.Tipo.CREDITO) {
+                creditos.add(transacao);
             }
+        }
+        Collections.sort(creditos);
 
-            tentativas++;
-            return this.codigo == codigo;
+        outputStream.writeInt(creditos.size());
+        outputStream.flush();
+        for (Transacao transacao : creditos) {
+            transacao.salvar(outputStream);
+        }
+    }
+
+    public static Usuario carregar(Main main, DataInputStream inputStream) throws IOException {
+        int ra = inputStream.readInt();
+        int pin = inputStream.readInt();
+        String pergunta = inputStream.readUTF();
+        String resposta = inputStream.readUTF();
+
+        Usuario usuario;
+        if (inputStream.readBoolean()) {
+            usuario = new UsuarioAdministrador(main, ra, pin, pergunta, resposta);
+        } else {
+            usuario = new Usuario(main, ra, pin, pergunta, resposta);
         }
 
-        @Override
-        public String toString() {
-            return "Alteração de senha: código = \"" + codigo + "\", tentativas remanescentes = "
-                    + (QUANTIDADE_MAXIMA - tentativas);
+        for (int i = 0; i < inputStream.readInt(); i++) {
+            usuario.transacoes.add(main.getGerenciadorEstoque().carregarTransacao(usuario, inputStream));
         }
+
+        return usuario;
     }
 }

@@ -1,16 +1,18 @@
 package br.unicamp.laricaco.usuario;
 
-import br.unicamp.laricaco.LariCACoException;
+import br.unicamp.laricaco.utilidades.*;
 import br.unicamp.laricaco.Main;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
-public class GerenciadorUsuario {
+public class GerenciadorUsuario implements Salvavel {
+
+    private static final Random gerador = new Random(System.currentTimeMillis());
 
     private final Main main;
     private final HashSet<Usuario> usuarios = new HashSet<>();
+    private final HashMap<Usuario, CodigoAlteracao> codigosAlteracaoSenha = new HashMap<>();
 
     public GerenciadorUsuario(Main main) {
         this.main = main;
@@ -29,16 +31,17 @@ public class GerenciadorUsuario {
         return null;
     }
 
-    public Usuario adicionarUsuario(int ra, int pin, String email) {
+    public Usuario adicionarUsuario(int ra, int pin, String pergunta, String resposta) {
         Usuario usuario = getUsuario(ra);
         if (usuario == null) {
-            usuario = new Usuario(main, ra, pin, email);
+            usuario = new Usuario(main, ra, pin, pergunta, resposta);
             usuarios.add(usuario);
         }
         return usuario;
     }
 
-    public UsuarioAdministrador adicionarAdministrador(int ra, int pin, String email) throws LariCACoException {
+    public UsuarioAdministrador adicionarAdministrador(int ra, int pin, String pergunta, String resposta)
+            throws LariCACoException {
 
         Usuario usuario = getUsuario(ra);
 
@@ -47,11 +50,130 @@ public class GerenciadorUsuario {
         }
 
         if (usuario == null) {
-            usuario = new UsuarioAdministrador(main, ra, pin, email);
+            usuario = new UsuarioAdministrador(main, ra, pin, pergunta, resposta);
             usuarios.add(usuario);
         }
 
         /* Como com certeza é um UsuarioAdministrador, podemos usar o casting */
         return (UsuarioAdministrador) usuario;
+    }
+
+    /*
+     * Para trocar a senha, o usuário que não tem acesso a sua conta deve colocar o seu RA e e-mail.
+     */
+    public int pedirTrocaSenha(Usuario usuario, String resposta) throws LariCACoException {
+        if (!usuario.getResposta().equalsIgnoreCase(resposta)) {
+            throw new LariCACoException("A resposta à pergunta secreta está incorreta!");
+        }
+
+        /* Pegamos o código atual se for válido */
+        CodigoAlteracao codigoAlteracao = codigosAlteracaoSenha.get(usuario);
+        if (codigoAlteracao != null && codigoAlteracao.podeRealizarTentativa()) {
+            throw new LariCACoException("O código de alteração passado ainda é válido! Informe ao administrador: " +
+                    codigoAlteracao.getCodigo());
+        } else {
+            codigoAlteracao = new CodigoAlteracao();
+            codigosAlteracaoSenha.put(usuario, codigoAlteracao);
+            return codigoAlteracao.getCodigo();
+        }
+    }
+
+    /*
+     * O usuário informa ao administrador o RA e o código. Se o código informado coincidir com o código registrado no RA
+     * da pessoa, iremos alterar a senha. Se não coincidir, sobrará N - 1 tentativas antes do código ser resetado.
+     */
+    public void trocarSenha(Usuario usuario, int codigo, int pin) throws LariCACoException {
+        if (pin < 0 || pin > 9999) {
+            throw new LariCACoException("Nova senha é inválida!");
+        }
+
+        CodigoAlteracao codigoAlteracao = codigosAlteracaoSenha.get(usuario);
+        if (codigoAlteracao == null || !codigoAlteracao.realizarTentativa(codigo)) {
+            throw new LariCACoException("Código é inválido!");
+        }
+
+        usuario.trocarSenha(pin);
+    }
+
+    @Override
+    public void salvar(DataOutputStream outputStream) throws IOException {
+        outputStream.writeInt(usuarios.size());
+        outputStream.flush();
+        for (Usuario usuario : usuarios) {
+
+            CodigoAlteracao codigoAlteracao = codigosAlteracaoSenha.get(usuario);
+            if (codigoAlteracao != null) {
+                outputStream.writeBoolean(true);
+                codigoAlteracao.salvar(outputStream);
+            } else {
+                outputStream.writeBoolean(false);
+            }
+
+            usuario.salvar(outputStream);
+        }
+    }
+
+    public static GerenciadorUsuario carregar(Main main, DataInputStream inputStream) throws IOException {
+        GerenciadorUsuario gerenciadorUsuario = new GerenciadorUsuario(main);
+
+        for (int i = 0; i < inputStream.readInt(); i++) {
+            CodigoAlteracao codigoAlteracao = gerenciadorUsuario.carregar(inputStream);
+            Usuario usuario = Usuario.carregar(main, inputStream);
+
+            if (codigoAlteracao != null) {
+                gerenciadorUsuario.codigosAlteracaoSenha.put(usuario, codigoAlteracao);
+            }
+        }
+
+        return gerenciadorUsuario;
+    }
+
+    private CodigoAlteracao carregar(DataInputStream inputStream) throws IOException {
+        return inputStream.readBoolean() ? new CodigoAlteracao(inputStream.readInt(), inputStream.readInt()) : null;
+    }
+
+    public class CodigoAlteracao implements Salvavel {
+
+        private static final int MAXIMO_TENTATIVAS = 3;
+
+        private final int codigo;
+        private int tentativas = 0;
+
+        private CodigoAlteracao() {
+            this.codigo = gerador.nextInt(100_000 - 10_000) + 10_000;
+        }
+
+        private CodigoAlteracao(int codigo, int tentativas) {
+            this.codigo = codigo;
+            this.tentativas = tentativas;
+        }
+
+        private boolean realizarTentativa(int codigo) {
+            if (!podeRealizarTentativa()) {
+                return false;
+            }
+
+            tentativas++;
+            return this.codigo == codigo;
+        }
+
+        public boolean podeRealizarTentativa() {
+            return tentativas <= MAXIMO_TENTATIVAS;
+        }
+
+        public int getCodigo() {
+            return codigo;
+        }
+
+        @Override
+        public String toString() {
+            return "Alteração de senha: código = \"" + codigo + "\"";
+        }
+
+        @Override
+        public void salvar(DataOutputStream outputStream) throws IOException {
+            outputStream.writeInt(tentativas);
+            outputStream.writeInt(codigo);
+        }
     }
 }

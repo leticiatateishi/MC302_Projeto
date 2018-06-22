@@ -3,6 +3,7 @@ package br.unicamp.laricaco;
 import br.unicamp.laricaco.estoque.GerenciadorEstoque;
 import br.unicamp.laricaco.estoque.Reposicao;
 import br.unicamp.laricaco.usuario.UsuarioAdministrador;
+import br.unicamp.laricaco.utilidades.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -11,7 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
-public class JanelaAdministrador extends JFrame{
+public class JanelaAdministrador extends JFrame {
 
     String[] produtoAdicionado = new String[5];
     Reposicao transacaoReposicao;
@@ -25,8 +26,7 @@ public class JanelaAdministrador extends JFrame{
     UsuarioAdministrador usuario;
     GerenciadorEstoque gerenciadorEstoque;
 
-    public JanelaAdministrador(UsuarioAdministrador usuario, GerenciadorEstoque gerenciadorEstoque){
-
+    public JanelaAdministrador(UsuarioAdministrador usuario, GerenciadorEstoque gerenciadorEstoque) {
         super("Usuário administrador");
         this.usuario = usuario;
         this.gerenciadorEstoque = gerenciadorEstoque;
@@ -37,20 +37,19 @@ public class JanelaAdministrador extends JFrame{
         setContentPane(panel);
 
         JPanel estatisticas = new JPanel();
+        JLabel label = new JLabel("Estatísticas");
+        label.setAlignmentX(CENTER_ALIGNMENT);
+        estatisticas.add(label);
         estatisticas.setLayout(new BoxLayout(estatisticas, BoxLayout.Y_AXIS));
         JScrollPane estatisticasScroll = new JScrollPane(estatisticas, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         estatisticasScroll.setPreferredSize(new Dimension(300, 300));
 
-        JLabel label = new JLabel("Estatísticas");
-        label.setAlignmentX(CENTER_ALIGNMENT);
-        estatisticas.add(label);
-
         JLabel ultimaReposicao = new JLabel("Data da última reposição: " + gerenciadorEstoque.ultimaReposição());
         JLabel ultimaCompra = new JLabel("Data da última compra: " + gerenciadorEstoque.ultimaCompra());
         JLabel maiorEstoque = new JLabel("Produto com maior estoque: " + gerenciadorEstoque.produtoComMaiorEstoque());
         JLabel maisVendido = new JLabel("Produto mais vendido: " + gerenciadorEstoque.produtoMaisVendido().getNome() +
-                             " (" + gerenciadorEstoque.produtoMaisVendido().getQuantidadeVendida() + " unidades)");
+                " (" + gerenciadorEstoque.produtoMaisVendido().getQuantidadeVendida() + " unidades)");
 
         estatisticas.add(ultimaReposicao);
         estatisticas.add(ultimaCompra);
@@ -130,14 +129,15 @@ public class JanelaAdministrador extends JFrame{
             model.addRow(produtoAdicionado);
 
             try {
-                if (transacaoReposicao == null){
+                if (transacaoReposicao == null) {
                     transacaoReposicao = usuario.fazerReposicao();
                 }
                 transacaoReposicao.adicionarProduto(gerenciadorEstoque.getOuCriarProduto(produtoAdicionado[0],
                         Float.valueOf(produtoAdicionado[4]), Float.valueOf(produtoAdicionado[3]),
                         Integer.parseInt(produtoAdicionado[1])),
                         Integer.parseInt(produtoAdicionado[2]));
-            }catch (LariCACoException e){}
+            } catch (LariCACoException e) {
+            }
 
             nomeCampo.setText("");
             produtosCaixaCampo.setText("");

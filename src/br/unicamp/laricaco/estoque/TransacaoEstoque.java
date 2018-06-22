@@ -1,10 +1,10 @@
 package br.unicamp.laricaco.estoque;
 
-import br.unicamp.laricaco.LariCACoException;
+import br.unicamp.laricaco.utilidades.LariCACoException;
 import br.unicamp.laricaco.usuario.Usuario;
 
-import java.util.Date;
-import java.util.HashMap;
+import java.io.*;
+import java.util.*;
 
 public abstract class TransacaoEstoque extends Transacao {
 
@@ -12,8 +12,8 @@ public abstract class TransacaoEstoque extends Transacao {
 
     final HashMap<Produto, Integer> produtos = new HashMap<>();
 
-    TransacaoEstoque(GerenciadorEstoque gerenciadorEstoque, Usuario usuario, Date data) {
-        super(usuario, data);
+    TransacaoEstoque(Tipo tipo, GerenciadorEstoque gerenciadorEstoque, Usuario usuario, Date data) {
+        super(tipo, usuario, data);
         this.gerenciadorEstoque = gerenciadorEstoque;
     }
 
@@ -25,10 +25,10 @@ public abstract class TransacaoEstoque extends Transacao {
 
         for (Produto produto : gerenciadorEstoque.getProdutos()) {
             if (produto.isEspecial()) {
-                for(Produto p: ((ProdutoEspecial)produto).getVariacoes()){
+                for (Produto p : ((ProdutoEspecial) produto).getVariacoes()) {
                     valor += getValor(p);
                 }
-            }else{
+            } else {
                 valor += getValor(produto);
             }
         }
@@ -40,7 +40,7 @@ public abstract class TransacaoEstoque extends Transacao {
         if (quantidade <= 0) {
             throw new LariCACoException("A quantidade resultante não deve ser negativa!");
         }
-        if(produto.isEspecial()){
+        if (produto.isEspecial()) {
             throw new LariCACoException("Produto Especial nao pode ser comprado!");
         }
         produtos.put(produto, quantidade + produtos.getOrDefault(produto, 0));
@@ -59,5 +59,15 @@ public abstract class TransacaoEstoque extends Transacao {
             return 0;
         }
         return produtos.getOrDefault(produto, 0);
+    }
+
+    @Override
+    public void salvar(DataOutputStream outputStream) throws IOException {
+        super.salvar(outputStream);
+        outputStream.writeInt(produtos.size());
+        for (Map.Entry<Produto, Integer> entry : produtos.entrySet()) {
+            outputStream.writeUTF(entry.getKey().getNome());
+            outputStream.writeInt(entry.getValue());
+        }
     }
 }

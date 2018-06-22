@@ -4,6 +4,7 @@ import br.unicamp.laricaco.estoque.*;
 import br.unicamp.laricaco.usuario.GerenciadorUsuario;
 import br.unicamp.laricaco.usuario.Usuario;
 import br.unicamp.laricaco.usuario.UsuarioAdministrador;
+import br.unicamp.laricaco.utilidades.*;
 
 public class Main {
 

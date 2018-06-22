@@ -7,8 +7,8 @@ import java.util.Date;
 
 public class UsuarioAdministrador extends Usuario {
 
-    UsuarioAdministrador(Main main, int ra, int pin, String email) {
-        super(main, ra, pin, email);
+    UsuarioAdministrador(Main main, int ra, int pin, String pergunta, String resposta) {
+        super(main, ra, pin, pergunta, resposta);
     }
 
     public Reposicao fazerReposicao() {
@@ -19,7 +19,7 @@ public class UsuarioAdministrador extends Usuario {
     }
 
     @Override
-    public boolean isAdmin() {
+    public boolean isAdministrador() {
         return true;
     }
 }
