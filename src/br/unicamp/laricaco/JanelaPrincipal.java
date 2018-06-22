@@ -133,31 +133,31 @@ public class JanelaPrincipal extends JFrame {
     class Creditar implements ActionListener {
 
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent e){
 
             TipoPagamento tipoPagamento;
 
-            if(dinheiro.isSelected()) {
-                tipoPagamento = TipoPagamento.DINHEIRO;
-            }
-            else if(cartaoCredito.isSelected()) {
-                tipoPagamento = TipoPagamento.CARTAO_CREDITO;
-            }
-            else if(cartaoDebito.isSelected()) {
-                tipoPagamento = TipoPagamento.CARTAO_DEBITO;
-            }
-            else {
-                throw new NullPointerException("aaaa"); // ARRUMAR EXCEPTION
-            }
+            try {
 
+                if (dinheiro.isSelected()) {
+                    tipoPagamento = TipoPagamento.DINHEIRO;
+                } else if (cartaoCredito.isSelected()) {
+                    tipoPagamento = TipoPagamento.CARTAO_CREDITO;
+                } else if (cartaoDebito.isSelected()) {
+                    tipoPagamento = TipoPagamento.CARTAO_DEBITO;
+                } else {
+                    throw new LariCACoException("Escolha a forma de pagamento!");
+                }
 
-            if (!quantiaDeposito.getText().equals("")) {
+                if (!quantiaDeposito.getText().equals("")) {
 
-                usuario.creditar(Float.parseFloat(quantiaDeposito.getText()), tipoPagamento);
-                quantiaDeposito.setText("");
-                saldo.setText("Saldo: " + usuario.getSaldo());
+                     usuario.creditar(Float.parseFloat(quantiaDeposito.getText()), tipoPagamento);
+                     quantiaDeposito.setText("");
+                     saldo.setText("Saldo: " + usuario.getSaldo());
+                }
+            }catch (LariCACoException ex){
+                JOptionPane.showMessageDialog(JanelaPrincipal.this, ex.getMessage(), "Pagamento", JOptionPane.ERROR_MESSAGE);
             }
-
         }
     }
 

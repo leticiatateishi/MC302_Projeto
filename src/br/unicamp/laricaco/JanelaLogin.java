@@ -67,6 +67,13 @@ public class JanelaLogin extends JFrame {
             if (usuario != null && usuario.getPin() == pin) {
                 criarJanelaPrincipal();
             }
+            else if(usuario == null){
+                JOptionPane.showMessageDialog(JanelaLogin.this, "Insira Usuario", "Usuario", JOptionPane.ERROR_MESSAGE);
+            }
+            else{
+                JOptionPane.showMessageDialog(JanelaLogin.this, "Senha Incorreta", "Senha", JOptionPane.ERROR_MESSAGE);
+                campoSenha.setText("");
+            }
         }
 
         public void criarJanelaPrincipal() {

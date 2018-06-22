@@ -122,7 +122,7 @@ public class JanelaAdministrador extends JFrame {
             produtoAdicionado[1] = produtosCaixaCampo.getText();
             produtoAdicionado[2] = quantidadeCaixasCampo.getText();
             produtoAdicionado[3] = precoCaixaCampo.getText();
-            produtoAdicionado[4] = String.valueOf(Float.valueOf(precoCaixaCampo.getText()) / Float.valueOf(produtosCaixaCampo.getText()));
+            produtoAdicionado[4] = String.valueOf(arredondar(Float.valueOf(precoCaixaCampo.getText()) / Float.valueOf(produtosCaixaCampo.getText())));
 
             model.addRow(produtoAdicionado);
 
@@ -142,5 +142,24 @@ public class JanelaAdministrador extends JFrame {
             quantidadeCaixasCampo.setText("");
             precoCaixaCampo.setText("");
         }
+    }
+
+    public static float arredondar(float f){
+        if ((100*f)%100 == 0){
+            return f;
+        }
+        if ((100*f)%100 <= 25){
+            return (f - (((100*f)%100)/100.0f) +0.25f);
+        }
+        else if ((100*f)%100 <= 50){
+            return (f - (((100*f)%100)/100.0f) +0.5f);
+        }
+        else if ((100*f)%100 <= 75){
+            return (f - (((100*f)%100)/100.0f) +0.75f);
+        }
+        else if ((100*f)%100 > 75){
+            return (f - (((100*f)%100)/100.0f) + 1);
+        }
+        else throw new NullPointerException ("Numero inválido");
     }
 }
