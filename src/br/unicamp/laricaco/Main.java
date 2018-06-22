@@ -61,7 +61,7 @@ public class Main {
             Produto trentoAmargo = trento.adicionarVariacaoProduto("amargo");
 
             UsuarioAdministrador administrador =
-                    gerenciadorUsuario.adicionarAdministrador(186154, 1212, "qual seu animal favorito", "mel");
+                    gerenciadorUsuario.adicionarAdministrador(1, 1212, "qual seu animal favorito", "mel");
             Reposicao reposicao1 = administrador.fazerReposicao();
             reposicao1.adicionarProduto(amendoim, 2);
             reposicao1.adicionarProduto(pirulito, 3);
@@ -76,8 +76,8 @@ public class Main {
             Usuario usuario1 = gerenciadorUsuario.adicionarUsuario(201454, 1020, "qual seu animal favorito", "mel");
             Usuario usuario2 = gerenciadorUsuario.adicionarUsuario(198625, 1234, "qual seu animal favorito", "mel");
 
-            usuario1.creditar(20.0f);
-//            System.out.println("Saldo do usuário com R.A. " + usuario1.getRA() + ": R$" + usuario1.getSaldo());
+            usuario1.creditar(20.0f, TipoPagamento.CARTAO_CREDITO);
+            System.out.println("Saldo do usuário com R.A. " + usuario1.getRA() + ": R$" + usuario1.getSaldo());
 
             Carrinho carrinho1 = usuario1.getCarrinho();
 
@@ -116,11 +116,13 @@ public class Main {
             Carrinho carrinho = usuario2.getCarrinho();
             carrinho.adicionarProduto(trentoAmargo, 3);
             Compra compra2 = carrinho.finalizarCompra();
-//            System.out.println(compra2);
-//            System.out.println("Saldo do usuário com R.A. " + usuario2.getRA() + " apos a compra: R$" + usuario2.getSaldo());
-            usuario2.creditar(5.0f);
-//            System.out.println("Saldo do usuário com R.A. " + usuario2.getRA() + " apos deposito de R$5,00: R$"
-//                    + usuario2.getSaldo());
+
+            System.out.println(compra2);
+            System.out.println("Saldo do usuário com R.A. " + usuario2.getRA() + " apos a compra: R$" + usuario2.getSaldo());
+            usuario2.creditar(5.0f, TipoPagamento.DINHEIRO);
+            System.out.println("Saldo do usuário com R.A. " + usuario2.getRA() + " apos deposito de R$5,00: R$"
+                    + usuario2.getSaldo());
+
 
 //            System.out.println("\nProdutos apos compras e reposicoes:\n" + amendoim + pirulito + pacoca + trentoAmargo
 //                    + trentoBranco);

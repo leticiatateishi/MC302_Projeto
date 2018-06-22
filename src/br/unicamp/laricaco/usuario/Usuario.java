@@ -1,10 +1,7 @@
 package br.unicamp.laricaco.usuario;
 
 import br.unicamp.laricaco.Main;
-import br.unicamp.laricaco.estoque.Carrinho;
-import br.unicamp.laricaco.estoque.Compra;
-import br.unicamp.laricaco.estoque.Credito;
-import br.unicamp.laricaco.estoque.Transacao;
+import br.unicamp.laricaco.estoque.*;
 import br.unicamp.laricaco.utilidades.*;
 
 import java.io.*;
@@ -56,8 +53,8 @@ public class Usuario implements Salvavel {
         transacoes.add(compra);
     }
 
-    public void creditar(float valor) {
-        Credito credito = new Credito(this, new Date(), valor);
+    public void creditar(float valor, TipoPagamento tipoPagamento) {
+        Credito credito = new Credito(this, new Date(), valor, tipoPagamento);
         /* Adicionamos a transação à lista de transações do usuário */
         transacoes.add(credito);
     }

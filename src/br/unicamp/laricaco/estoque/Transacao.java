@@ -45,7 +45,7 @@ public abstract class Transacao implements Salvavel, Comparable<Transacao> {
 
         /* Apenas Crédito não é uma transação em estoque */
         if (tipo == Tipo.CREDITO) {
-            return new Credito(usuario, data, inputStream.readFloat());
+            return new Credito(usuario, data, inputStream.readFloat(),TipoPagamento.fromOrdinal(inputStream.readInt()));
         }
 
         TransacaoEstoque transacaoEstoque;

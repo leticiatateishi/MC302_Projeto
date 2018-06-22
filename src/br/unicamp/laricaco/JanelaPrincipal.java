@@ -2,6 +2,7 @@ package br.unicamp.laricaco;
 
 import br.unicamp.laricaco.estoque.Produto;
 import br.unicamp.laricaco.estoque.ProdutoEspecial;
+import br.unicamp.laricaco.estoque.TipoPagamento;
 import br.unicamp.laricaco.usuario.Usuario;
 import br.unicamp.laricaco.usuario.UsuarioAdministrador;
 import br.unicamp.laricaco.utilidades.*;
@@ -16,7 +17,7 @@ public class JanelaPrincipal extends JFrame {
     private JTextField quantiaDeposito;
     private Usuario usuario;
     private JLabel ra, saldo;
-    private JCheckBox cartaoCredito, cartaoDebito, dinheiro;
+    private JRadioButton cartaoCredito, cartaoDebito, dinheiro;
     private JLabel totalLabel;
 
     public JanelaPrincipal(Main main, Usuario usuario, JanelaLogin.Entrar entrar) {
@@ -41,16 +42,17 @@ public class JanelaPrincipal extends JFrame {
         deposito.add(botaoDepositar);
         deposito.add(quantiaDeposito);
 
-        JPanel checkBoxes = new JPanel(new FlowLayout());
-        cartaoCredito = new JCheckBox("Cartao De Credito");
-        cartaoDebito = new JCheckBox("Cartao De Debito");
-        dinheiro = new JCheckBox("Dinheiro");
-        cartaoCredito.addItemListener(new CheckBoxHandler(cartaoCredito));
-        cartaoDebito.addItemListener(new CheckBoxHandler(cartaoDebito));
-        dinheiro.addItemListener(new CheckBoxHandler(dinheiro));
-        checkBoxes.add(cartaoCredito);
-        checkBoxes.add(cartaoDebito);
-        checkBoxes.add(dinheiro);
+        JPanel buttonsPanel = new JPanel(new FlowLayout());
+        ButtonGroup radioButtons = new ButtonGroup();
+        cartaoCredito = new JRadioButton("Cartao de Credito");
+        cartaoDebito = new JRadioButton("Cartao de Debito");
+        dinheiro = new JRadioButton("Dinheiro");
+        radioButtons.add(dinheiro);
+        radioButtons.add(cartaoCredito);
+        radioButtons.add(cartaoDebito);
+        buttonsPanel.add(dinheiro);
+        buttonsPanel.add(cartaoCredito);
+        buttonsPanel.add(cartaoDebito);
 
         JPanel produtosPanel = new JPanel();
         produtosPanel.setLayout(new BoxLayout(produtosPanel, BoxLayout.Y_AXIS));
@@ -58,7 +60,7 @@ public class JanelaPrincipal extends JFrame {
                 produtosPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         produtosScroll.setPreferredSize(new Dimension(500, 300));
 
-        //Para nao dar ruim com produto especial:
+
         ArrayList<EntradaProduto> entradaProdutos = new ArrayList<>();
         for (Produto p : main.getGerenciadorEstoque().getProdutos()) {
             if (!p.isEspecial()) {
@@ -101,7 +103,7 @@ public class JanelaPrincipal extends JFrame {
 
         getContentPane().add(dados);
         getContentPane().add(deposito);
-        getContentPane().add(checkBoxes);
+        getContentPane().add(buttonsPanel);
         getContentPane().add(produtosScroll);
         getContentPane().add(finalizar);
 
@@ -133,50 +135,29 @@ public class JanelaPrincipal extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
 
+            TipoPagamento tipoPagamento;
+
+            if(dinheiro.isSelected()) {
+                tipoPagamento = TipoPagamento.DINHEIRO;
+            }
+            else if(cartaoCredito.isSelected()) {
+                tipoPagamento = TipoPagamento.CARTAO_CREDITO;
+            }
+            else if(cartaoDebito.isSelected()) {
+                tipoPagamento = TipoPagamento.CARTAO_DEBITO;
+            }
+            else {
+                throw new NullPointerException("aaaa"); // ARRUMAR EXCEPTION
+            }
+
+
             if (!quantiaDeposito.getText().equals("")) {
 
-                usuario.creditar(Float.parseFloat(quantiaDeposito.getText()));
+                usuario.creditar(Float.parseFloat(quantiaDeposito.getText()), tipoPagamento);
                 quantiaDeposito.setText("");
                 saldo.setText("Saldo: " + usuario.getSaldo());
             }
 
-        }
-    }
-
-    class Debitar implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-            if (!quantiaDeposito.getText().equals("")) {
-
-                //????
-                quantiaDeposito.setText("");
-                saldo.setText("Saldo: " + usuario.getSaldo());
-            }
-
-        }
-    }
-
-    class CheckBoxHandler implements ItemListener {
-
-        private final JCheckBox checkbox;
-
-        public CheckBoxHandler(JCheckBox checkBox) {
-            this.checkbox = checkBox;
-        }
-
-        @Override
-        public void itemStateChanged(ItemEvent e) {
-            if (dinheiro != checkbox) {
-                dinheiro.setSelected(false);
-            }
-            if (cartaoCredito != checkbox) {
-                cartaoCredito.setSelected(false);
-            }
-            if (cartaoDebito != checkbox) {
-                cartaoDebito.setSelected(false);
-            }
         }
     }
 

@@ -13,17 +13,17 @@ import java.awt.event.KeyEvent;
 
 public class JanelaAdministrador extends JFrame {
 
-    String[] produtoAdicionado = new String[5];
-    Reposicao transacaoReposicao;
-    DefaultTableModel model = new DefaultTableModel();
+    private String[] produtoAdicionado = new String[5];
+    private Reposicao transacaoReposicao;
+    private DefaultTableModel model = new DefaultTableModel();
 
-    JTextField nomeCampo = new JTextField(10);
-    JTextField produtosCaixaCampo = new JTextField(10);
-    JTextField quantidadeCaixasCampo = new JTextField(10);
-    JTextField precoCaixaCampo = new JTextField(10);
+    private JTextField nomeCampo = new JTextField(10);
+    private JTextField produtosCaixaCampo = new JTextField(10);
+    private JTextField quantidadeCaixasCampo = new JTextField(10);
+    private JTextField precoCaixaCampo = new JTextField(10);
 
-    UsuarioAdministrador usuario;
-    GerenciadorEstoque gerenciadorEstoque;
+    private UsuarioAdministrador usuario;
+    private GerenciadorEstoque gerenciadorEstoque;
 
     public JanelaAdministrador(UsuarioAdministrador usuario, GerenciadorEstoque gerenciadorEstoque) {
         super("Usuário administrador");
