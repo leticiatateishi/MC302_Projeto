@@ -120,7 +120,6 @@ public class JanelaPrincipal extends JFrame {
                 saldo.setText("Saldo: " + usuario.getSaldo());
                 if(usuario.getSaldo() < 0){
                     JOptionPane.showMessageDialog(this, "Não compre fiado!", "Fiado", JOptionPane.WARNING_MESSAGE);
-                    System.out.println(main.getGerenciadorEstoque().toString());
                 }
             }catch (LariCACoException e1){
                 JOptionPane.showMessageDialog(this, e1.getMessage(), "Erro!", JOptionPane.ERROR_MESSAGE);
