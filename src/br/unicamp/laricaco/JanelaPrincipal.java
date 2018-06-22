@@ -19,7 +19,7 @@ public class JanelaPrincipal extends JFrame {
     private ArrayList<Produto> carrinho;
     private JLabel totalLabel;
 
-    public JanelaPrincipal(Main main, Usuario usuario) {
+    public JanelaPrincipal(Main main, Usuario usuario, JanelaLogin.Entrar entrar) {
 
         super("LariCACo!");
         this.usuario = usuario;
@@ -27,6 +27,7 @@ public class JanelaPrincipal extends JFrame {
 
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         JPanel dados = new JPanel();
+
         dados.setLayout(new BoxLayout(dados, BoxLayout.Y_AXIS));
         ra = new JLabel("RA: " + usuario.getRA());
         dados.add(ra);
@@ -98,6 +99,7 @@ public class JanelaPrincipal extends JFrame {
             produtosPanel.add(produtoPanel);
         }
 
+
         JPanel finalizar = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         finalizar.add(totalLabel);
         JButton esvaziarCarrinho = new JButton("Esvaziar Carrinho");
@@ -118,6 +120,7 @@ public class JanelaPrincipal extends JFrame {
                 saldo.setText("Saldo: " + usuario.getSaldo());
                 if(usuario.getSaldo() < 0){
                     JOptionPane.showMessageDialog(this, "Não compre fiado!", "Fiado", JOptionPane.WARNING_MESSAGE);
+                    System.out.println(main.getGerenciadorEstoque().toString());
                 }
             }catch (LariCACoException e1){
                 JOptionPane.showMessageDialog(this, e1.getMessage(), "Erro!", JOptionPane.ERROR_MESSAGE);
@@ -133,17 +136,19 @@ public class JanelaPrincipal extends JFrame {
 
         if (usuario instanceof UsuarioAdministrador) {
             JButton administrar = new JButton("Administrar");
+            administrar.setAlignmentX(CENTER_ALIGNMENT);
             getContentPane().add(administrar);
             administrar.addActionListener(e -> {
-                JanelaAdministrador janela = new JanelaAdministrador();
+                JanelaAdministrador janela = new JanelaAdministrador((UsuarioAdministrador) usuario, main.getGerenciadorEstoque());
                 JanelaPrincipal.this.setVisible(false);
-                janela.pack();
+                janela.setSize(700,500);
                 janela.setVisible(true);
                 janela.addWindowListener(new WindowAdapter() {
                     @Override
                     public void windowClosing(WindowEvent e) {
                         janela.dispose();
-                        JanelaPrincipal.this.getWindowListeners()[0].windowClosing(e);
+                        dispose();
+                        entrar.criarJanelaPrincipal();
                     }
                 });
 

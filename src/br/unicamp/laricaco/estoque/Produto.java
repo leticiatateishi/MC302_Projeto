@@ -1,6 +1,8 @@
 package br.unicamp.laricaco.estoque;
 
-public class Produto {
+import java.util.List;
+
+public class Produto implements Comparable<Produto> {
 
     protected final GerenciadorEstoque gerenciadorEstoque;
 
@@ -29,6 +31,15 @@ public class Produto {
         }
 
         return estoque;
+    }
+
+    public int getQuantidadeVendida() {
+        List<TransacaoEstoque> transacoes = gerenciadorEstoque.getTransacoes(this);
+
+        return transacoes.stream()
+                .filter(transacao -> transacao instanceof Compra)
+                .mapToInt(transacao -> transacao.quantidadeProduto(this))
+                .sum();
     }
 
     public String getNome() {
@@ -77,5 +88,11 @@ public class Produto {
     public String toString() {
         return "\t* " + getNome() + " (R$" + getPrecoCusto() + "/caixa com " + getQuantidadePorCaixa() + "unidades)"
                 + "vendido a preco unitario de R$" + getPrecoVenda() + ". Estoque atual: " + getEstoque() + "\n";
+    }
+
+    public int compareTo(Produto produto) {
+        if (getEstoque() < produto.getEstoque()) return -1;
+        if (getEstoque() > produto.getEstoque()) return 1;
+        return 0;
     }
 }

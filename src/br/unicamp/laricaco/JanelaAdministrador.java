@@ -1,30 +1,63 @@
 package br.unicamp.laricaco;
 
+import br.unicamp.laricaco.estoque.GerenciadorEstoque;
+import br.unicamp.laricaco.estoque.Reposicao;
+import br.unicamp.laricaco.usuario.UsuarioAdministrador;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 public class JanelaAdministrador extends JFrame{
 
+    String[] produtoAdicionado = new String[5];
+    Reposicao transacaoReposicao;
+    DefaultTableModel model = new DefaultTableModel();
 
-    public JanelaAdministrador(){
+    JTextField nomeCampo = new JTextField(10);
+    JTextField produtosCaixaCampo = new JTextField(10);
+    JTextField quantidadeCaixasCampo = new JTextField(10);
+    JTextField precoCaixaCampo = new JTextField(10);
+
+    UsuarioAdministrador usuario;
+    GerenciadorEstoque gerenciadorEstoque;
+
+    public JanelaAdministrador(UsuarioAdministrador usuario, GerenciadorEstoque gerenciadorEstoque){
 
         super("Usuário administrador");
+        this.usuario = usuario;
+        this.gerenciadorEstoque = gerenciadorEstoque;
+
         setSize(500, 300);
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         setContentPane(panel);
 
         JPanel estatisticas = new JPanel();
-        JLabel label = new JLabel("Estatísticas");
-        label.setAlignmentX(CENTER_ALIGNMENT);
-         estatisticas.add(label);
         estatisticas.setLayout(new BoxLayout(estatisticas, BoxLayout.Y_AXIS));
         JScrollPane estatisticasScroll = new JScrollPane(estatisticas, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        panel.add(estatisticas);
+        estatisticasScroll.setPreferredSize(new Dimension(300, 300));
+
+        JLabel label = new JLabel("Estatísticas");
+        label.setAlignmentX(CENTER_ALIGNMENT);
+        estatisticas.add(label);
+
+        JLabel ultimaReposicao = new JLabel("Data da última reposição: " + gerenciadorEstoque.ultimaReposição());
+        JLabel ultimaCompra = new JLabel("Data da última compra: " + gerenciadorEstoque.ultimaCompra());
+        JLabel maiorEstoque = new JLabel("Produto com maior estoque: " + gerenciadorEstoque.produtoComMaiorEstoque());
+        JLabel maisVendido = new JLabel("Produto mais vendido: " + gerenciadorEstoque.produtoMaisVendido().getNome() +
+                             " (" + gerenciadorEstoque.produtoMaisVendido().getQuantidadeVendida() + " unidades)");
+
+        estatisticas.add(ultimaReposicao);
+        estatisticas.add(ultimaCompra);
+        estatisticas.add(maiorEstoque);
+        estatisticas.add(maisVendido);
+
+        getContentPane().add(estatisticasScroll);
 
         JPanel reposicao = new JPanel();
         reposicao.setLayout(new BoxLayout(reposicao, BoxLayout.Y_AXIS));
@@ -34,8 +67,7 @@ public class JanelaAdministrador extends JFrame{
         JTable tabela = new JTable();
         JScrollPane scroll = new JScrollPane(tabela);
 
-        Object[] colunas = {"Nome", "Produtos por caixa", "Quantidade de caixas", "Preço da caixa"};
-        DefaultTableModel model = new DefaultTableModel();
+        Object[] colunas = {"Nome", "Produtos por caixa", "Quantidade de caixas", "Preço da caixa", "Preço de venda"};
         model.setColumnIdentifiers(colunas);
         tabela.setModel(model);
         tabela.setRowHeight(25);
@@ -57,10 +89,6 @@ public class JanelaAdministrador extends JFrame{
         JLabel quantidadeCaixas = new JLabel("Quantidade de caixas:");
         JLabel precoCaixa = new JLabel("Preço da caixa:");
 
-        JTextField nomeCampo = new JTextField(10);
-        JTextField produtosCaixaCampo = new JTextField(10);
-        JTextField quantidadeCaixasCampo = new JTextField(10);
-        JTextField precoCaixaCampo = new JTextField(10);
 
         nomePainel.add(nome);
         nomePainel.add(nomeCampo);
@@ -75,20 +103,9 @@ public class JanelaAdministrador extends JFrame{
         precoCaixaPainel.add(precoCaixaCampo);
 
         JButton adicionarReposicao = new JButton("Adicionar");
-        String[] produtoAdicionado = new String[4];
-        adicionarReposicao.addActionListener(actionEvent -> {
-            produtoAdicionado[0] = nomeCampo.getText();
-            produtoAdicionado[1] = produtosCaixaCampo.getText();
-            produtoAdicionado[2] = quantidadeCaixasCampo.getText();
-            produtoAdicionado[3] = precoCaixaCampo.getText();
+        adicionarReposicao.setMnemonic(KeyEvent.VK_ENTER);
 
-            model.addRow(produtoAdicionado);
-
-            nomeCampo.setText("");
-            produtosCaixaCampo.setText("");
-            quantidadeCaixasCampo.setText("");
-            precoCaixaCampo.setText("");
-        });
+        adicionarReposicao.addActionListener(new AdicionarReposicao());
 
         reposicao.add(scroll);
         reposicao.add(nomePainel);
@@ -101,4 +118,31 @@ public class JanelaAdministrador extends JFrame{
 
     }
 
+    private class AdicionarReposicao implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+            produtoAdicionado[0] = nomeCampo.getText();
+            produtoAdicionado[1] = produtosCaixaCampo.getText();
+            produtoAdicionado[2] = quantidadeCaixasCampo.getText();
+            produtoAdicionado[3] = precoCaixaCampo.getText();
+            produtoAdicionado[4] = String.valueOf(Float.valueOf(precoCaixaCampo.getText()) / Float.valueOf(produtosCaixaCampo.getText()));
+
+            model.addRow(produtoAdicionado);
+
+            try {
+                if (transacaoReposicao == null){
+                    transacaoReposicao = usuario.fazerReposicao();
+                }
+                transacaoReposicao.adicionarProduto(gerenciadorEstoque.getOuCriarProduto(produtoAdicionado[0],
+                        Float.valueOf(produtoAdicionado[4]), Float.valueOf(produtoAdicionado[3]),
+                        Integer.parseInt(produtoAdicionado[1])),
+                        Integer.parseInt(produtoAdicionado[2]));
+            }catch (LariCACoException e){}
+
+            nomeCampo.setText("");
+            produtosCaixaCampo.setText("");
+            quantidadeCaixasCampo.setText("");
+            precoCaixaCampo.setText("");
+        }
+    }
 }

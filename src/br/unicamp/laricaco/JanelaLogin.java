@@ -43,7 +43,7 @@ public class JanelaLogin extends JFrame {
         this.setVisible(true);
     }
 
-    class Entrar implements ActionListener {
+    public class Entrar implements ActionListener {
 
         int ra, pin;
         Usuario usuario;
@@ -55,20 +55,24 @@ public class JanelaLogin extends JFrame {
 
             usuario = main.getGerenciadorUsuario().getUsuario(ra);
             if (usuario != null && usuario.getPin() == pin) {
-                JanelaPrincipal janela = new JanelaPrincipal(main, usuario);
-                JanelaLogin.this.setVisible(false);
-                janela.pack();
-                janela.setVisible(true);
-                janela.addWindowListener(new WindowAdapter() {
-                    @Override
-                    public void windowClosing(WindowEvent e) {
-                        janela.dispose();
-                        campoLogin.setText("");
-                        campoSenha.setText("");
-                        JanelaLogin.this.setVisible(true);
-                    }
-                });
+                criarJanelaPrincipal();
             }
+        }
+
+        public void criarJanelaPrincipal() {
+            JanelaPrincipal janela = new JanelaPrincipal(main, usuario, this);
+            JanelaLogin.this.setVisible(false);
+            janela.pack();
+            janela.setVisible(true);
+            janela.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    janela.dispose();
+                    campoLogin.setText("");
+                    campoSenha.setText("");
+                    JanelaLogin.this.setVisible(true);
+                }
+            });
         }
     }
 }
