@@ -6,6 +6,7 @@ import br.unicamp.laricaco.utilidades.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 
 public class JanelaLogin extends JFrame {
 
@@ -77,6 +78,17 @@ public class JanelaLogin extends JFrame {
                 @Override
                 public void windowClosing(WindowEvent e) {
                     janela.dispose();
+                    try {
+                        main.salvar();
+                    } catch (Exception e1) {
+                        JOptionPane.showMessageDialog(
+                                JanelaLogin.this,
+                                "Falha ao salvar banco de dados no arquivo!",
+                                "Erro!",
+                                JOptionPane.WARNING_MESSAGE
+                        );
+                        e1.printStackTrace();
+                    }
                     campoLogin.setText("");
                     campoSenha.setText("");
                     JanelaLogin.this.setVisible(true);

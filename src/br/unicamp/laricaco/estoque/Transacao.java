@@ -55,7 +55,8 @@ public abstract class Transacao implements Salvavel, Comparable<Transacao> {
             transacaoEstoque = new Reposicao(gerenciadorEstoque, (UsuarioAdministrador) usuario, data);
         }
         /* Adicionamos as compras */
-        for (int i = 0; i < inputStream.readInt(); i++) {
+        int numTransacoes = inputStream.readInt();
+        for (int i = 0; i < numTransacoes; i++) {
             transacaoEstoque.produtos.put(gerenciadorEstoque.getProduto(inputStream.readUTF()), inputStream.readInt());
         }
         return transacaoEstoque;

@@ -94,9 +94,7 @@ public class Produto implements Comparable<Produto>, Salvavel {
     }
 
     public int compareTo(Produto produto) {
-        if (getEstoque() < produto.getEstoque()) return -1;
-        if (getEstoque() > produto.getEstoque()) return 1;
-        return 0;
+        return Integer.compare(getEstoque(), produto.getEstoque());
     }
 
     @Override

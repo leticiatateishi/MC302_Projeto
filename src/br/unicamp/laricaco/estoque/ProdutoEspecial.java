@@ -65,7 +65,8 @@ public class ProdutoEspecial extends Produto {
                 gerenciadorEstoque, nome, precoVenda, precoCusto, quantidadePorcaixa);
 
         /* Carregamos variações */
-        for (int i = 0; i < inputStream.readInt(); i++) {
+        int numVariacoes = inputStream.readInt();
+        for (int i = 0; i < numVariacoes; i++) {
             produtoEspecial.variacoes.add(Produto.carregar(gerenciadorEstoque, inputStream));
         }
 

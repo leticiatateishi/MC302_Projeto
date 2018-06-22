@@ -119,19 +119,14 @@ public class Usuario implements Salvavel {
         outputStream.writeUTF(pergunta);
         outputStream.writeUTF(resposta);
         outputStream.writeBoolean(isAdministrador());
-
-        ArrayList<Transacao> creditos = new ArrayList<>();
-        for (Transacao transacao : transacoes) {
-            /* As transações de estoque serão guardadas pelo gerenciador de estoque */
-            if (transacao.getTipo() == Transacao.Tipo.CREDITO) {
-                creditos.add(transacao);
-            }
-        }
-        Collections.sort(creditos);
-
-        outputStream.writeInt(creditos.size());
+        outputStream.writeInt(transacoes.size());
         outputStream.flush();
-        for (Transacao transacao : creditos) {
+
+        Collections.sort(transacoes);
+        for (Transacao transacao : transacoes) {
+            /* As transações serão guardadas pelo usuário, o estoque só guardará os produtos, pois são independentes
+             * do usuário (transações por outro lado requerem um usuário) */
+            System.out.println(transacao.getTipo() + " " + transacao.getData().toString());
             transacao.salvar(outputStream);
         }
     }
@@ -149,7 +144,8 @@ public class Usuario implements Salvavel {
             usuario = new Usuario(main, ra, pin, pergunta, resposta);
         }
 
-        for (int i = 0; i < inputStream.readInt(); i++) {
+        int numTransacoes = inputStream.readInt();
+        for (int i = 0; i < numTransacoes; i++) {
             usuario.transacoes.add(main.getGerenciadorEstoque().carregarTransacao(usuario, inputStream));
         }
 

@@ -6,14 +6,38 @@ import br.unicamp.laricaco.usuario.Usuario;
 import br.unicamp.laricaco.usuario.UsuarioAdministrador;
 import br.unicamp.laricaco.utilidades.*;
 
+import java.io.*;
+
 public class Main {
 
-    private final GerenciadorEstoque gerenciadorEstoque;
-    private final GerenciadorUsuario gerenciadorUsuario;
+    private GerenciadorEstoque gerenciadorEstoque;
+    private GerenciadorUsuario gerenciadorUsuario;
 
     public Main() {
-        this.gerenciadorEstoque = new GerenciadorEstoque();
-        this.gerenciadorUsuario = new GerenciadorUsuario(this);
+        boolean falhaCarregar = false;
+        try (DataInputStream inputStream =
+                     new DataInputStream(new BufferedInputStream(new FileInputStream("database.db")))) {
+            gerenciadorEstoque = GerenciadorEstoque.carregar(inputStream);
+            gerenciadorUsuario = GerenciadorUsuario.carregar(this, inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+            gerenciadorEstoque = new GerenciadorEstoque();
+            gerenciadorUsuario = new GerenciadorUsuario(this);
+            falhaCarregar = true;
+        }
+
+        if (falhaCarregar) {
+            criarPadrao();
+        }
+    }
+
+    public void salvar() throws IOException {
+        DataOutputStream outputStream =
+                new DataOutputStream(new BufferedOutputStream(new FileOutputStream("database.db")));
+        gerenciadorEstoque.salvar(outputStream);
+        gerenciadorUsuario.salvar(outputStream);
+        outputStream.flush();
+        outputStream.close();
     }
 
     public GerenciadorEstoque getGerenciadorEstoque() {
@@ -24,11 +48,7 @@ public class Main {
         return gerenciadorUsuario;
     }
 
-    public static void main(String[] args) {
-        Main main = new Main();
-        GerenciadorEstoque gerenciadorEstoque = main.getGerenciadorEstoque();
-        GerenciadorUsuario gerenciadorUsuario = main.getGerenciadorUsuario();
-
+    private void criarPadrao() {
         /*
          * Cadastro do usuário administrador no sistema.
          */
@@ -47,8 +67,8 @@ public class Main {
             reposicao1.adicionarProduto(pirulito, 3);
             reposicao1.adicionarProduto(pacoca, 1);
 
-            System.out.println("Produtos apos a primeira reposicao:\n" + amendoim + pirulito + pacoca + trentoAmargo
-                    + trentoBranco + "\n");
+//            System.out.println("Produtos apos a primeira reposicao:\n" + amendoim + pirulito + pacoca + trentoAmargo
+//                    + trentoBranco + "\n");
 
             /*
              * Cadastro de outros usuários no sistema.
@@ -57,7 +77,7 @@ public class Main {
             Usuario usuario2 = gerenciadorUsuario.adicionarUsuario(198625, 1234, "qual seu animal favorito", "mel");
 
             usuario1.creditar(20.0f);
-            System.out.println("Saldo do usuário com R.A. " + usuario1.getRA() + ": R$" + usuario1.getSaldo());
+//            System.out.println("Saldo do usuário com R.A. " + usuario1.getRA() + ": R$" + usuario1.getSaldo());
 
             Carrinho carrinho1 = usuario1.getCarrinho();
 
@@ -73,14 +93,14 @@ public class Main {
             try {
                 carrinho1.adicionarProduto(trentoAmargo, 2);
             } catch (LariCACoException e) {
-                System.out.println("Trento amargo não disponível no estoque");
+//                System.out.println("Trento amargo não disponível no estoque");
             }
 
-            System.out.println(carrinho1);
-            System.out.println(carrinho1.finalizarCompra());
+//            System.out.println(carrinho1);
+//            System.out.println(carrinho1.finalizarCompra());
 
-            System.out.println("Saldo do usuário com R.A. " + usuario1.getRA() + " apos a compra: R$" + usuario1.getSaldo()
-                    + "\n");
+//            System.out.println("Saldo do usuário com R.A. " + usuario1.getRA() + " apos a compra: R$" + usuario1.getSaldo()
+//                    + "\n");
 
             /*
              * Adicionamos uma variante do produto especial trento.
@@ -88,7 +108,7 @@ public class Main {
             Reposicao reposicao2 = administrador.fazerReposicao();
             try {
                 reposicao2.adicionarProduto(trentoAmargo, 4);
-                System.out.println("Trento adicionado ao estoque.\n");
+//                System.out.println("Trento adicionado ao estoque.\n");
             } catch (LariCACoException e) {
                 e.printStackTrace();
             }
@@ -96,21 +116,25 @@ public class Main {
             Carrinho carrinho = usuario2.getCarrinho();
             carrinho.adicionarProduto(trentoAmargo, 3);
             Compra compra2 = carrinho.finalizarCompra();
-            System.out.println(compra2);
-            System.out.println("Saldo do usuário com R.A. " + usuario2.getRA() + " apos a compra: R$" + usuario2.getSaldo());
+//            System.out.println(compra2);
+//            System.out.println("Saldo do usuário com R.A. " + usuario2.getRA() + " apos a compra: R$" + usuario2.getSaldo());
             usuario2.creditar(5.0f);
-            System.out.println("Saldo do usuário com R.A. " + usuario2.getRA() + " apos deposito de R$5,00: R$"
-                    + usuario2.getSaldo());
+//            System.out.println("Saldo do usuário com R.A. " + usuario2.getRA() + " apos deposito de R$5,00: R$"
+//                    + usuario2.getSaldo());
 
-            System.out.println("\nProdutos apos compras e reposicoes:\n" + amendoim + pirulito + pacoca + trentoAmargo
-                    + trentoBranco);
+//            System.out.println("\nProdutos apos compras e reposicoes:\n" + amendoim + pirulito + pacoca + trentoAmargo
+//                    + trentoBranco);
 
-            System.out.println("\nPara ser consistente, a alteração de senha deve retornar false e true:");
-            System.out.println(usuario1.alterarSenha(1021, 5555));
-            System.out.println(usuario1.alterarSenha(1020, 5555));
+//            System.out.println("\nPara ser consistente, a alteração de senha deve retornar false e true:");
+//            System.out.println(usuario1.alterarSenha(1021, 5555));
+//            System.out.println(usuario1.alterarSenha(1020, 5555));
         } catch (LariCACoException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) {
+        Main main = new Main();
 
         JanelaLogin janela = new JanelaLogin(main);
         janela.pack();

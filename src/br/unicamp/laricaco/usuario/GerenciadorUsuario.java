@@ -116,13 +116,16 @@ public class GerenciadorUsuario implements Salvavel {
     public static GerenciadorUsuario carregar(Main main, DataInputStream inputStream) throws IOException {
         GerenciadorUsuario gerenciadorUsuario = new GerenciadorUsuario(main);
 
-        for (int i = 0; i < inputStream.readInt(); i++) {
+        int numUsuarios = inputStream.readInt();
+        for (int i = 0; i < numUsuarios; i++) {
             CodigoAlteracao codigoAlteracao = gerenciadorUsuario.carregar(inputStream);
             Usuario usuario = Usuario.carregar(main, inputStream);
 
             if (codigoAlteracao != null) {
                 gerenciadorUsuario.codigosAlteracaoSenha.put(usuario, codigoAlteracao);
             }
+
+            gerenciadorUsuario.usuarios.add(usuario);
         }
 
         return gerenciadorUsuario;

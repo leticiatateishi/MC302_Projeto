@@ -70,8 +70,16 @@ public class GerenciadorEstoque implements Salvavel {
 
     public Produto getProduto(String nome) {
         for (Produto produto : produtos) {
-            if (produto.getNome().equals(nome))
+            if (produto.getNome().equals(nome)) {
                 return produto;
+            }
+            if (produto.isEspecial()) {
+                for (Produto variacao : ((ProdutoEspecial) produto).getVariacoes()) {
+                    if (variacao.getNome().equals(nome)) {
+                        return variacao;
+                    }
+                }
+            }
         }
         return null;
     }
@@ -143,7 +151,8 @@ public class GerenciadorEstoque implements Salvavel {
     public static GerenciadorEstoque carregar(DataInputStream inputStream) throws IOException {
         GerenciadorEstoque gerenciadorEstoque = new GerenciadorEstoque();
 
-        for (int i = 0; i < inputStream.readInt(); i++) {
+        int numProdutos = inputStream.readInt();
+        for (int i = 0; i < numProdutos; i++) {
             Produto produto = Produto.carregar(gerenciadorEstoque, inputStream);
             gerenciadorEstoque.produtos.add(produto);
         }
@@ -155,6 +164,7 @@ public class GerenciadorEstoque implements Salvavel {
      * estoque */
     public Transacao carregarTransacao(Usuario usuario, DataInputStream inputStream) throws IOException {
         Transacao transacao = Transacao.carregar(this, usuario, inputStream);
+        /* Apenas as transações em estoque serão guardadas no gerenciador */
         if (transacao.getTipo().isTransacaoEstoque()) {
             transacoes.add((TransacaoEstoque) transacao);
         }

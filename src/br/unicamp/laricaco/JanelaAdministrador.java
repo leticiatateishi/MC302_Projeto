@@ -1,7 +1,6 @@
 package br.unicamp.laricaco;
 
-import br.unicamp.laricaco.estoque.GerenciadorEstoque;
-import br.unicamp.laricaco.estoque.Reposicao;
+import br.unicamp.laricaco.estoque.*;
 import br.unicamp.laricaco.usuario.UsuarioAdministrador;
 import br.unicamp.laricaco.utilidades.*;
 
@@ -48,8 +47,9 @@ public class JanelaAdministrador extends JFrame {
         JLabel ultimaReposicao = new JLabel("Data da última reposição: " + gerenciadorEstoque.ultimaReposição());
         JLabel ultimaCompra = new JLabel("Data da última compra: " + gerenciadorEstoque.ultimaCompra());
         JLabel maiorEstoque = new JLabel("Produto com maior estoque: " + gerenciadorEstoque.produtoComMaiorEstoque());
-        JLabel maisVendido = new JLabel("Produto mais vendido: " + gerenciadorEstoque.produtoMaisVendido().getNome() +
-                " (" + gerenciadorEstoque.produtoMaisVendido().getQuantidadeVendida() + " unidades)");
+        Produto produtoMaisVendido = gerenciadorEstoque.produtoMaisVendido();
+        JLabel maisVendido = new JLabel("Produto mais vendido: " + produtoMaisVendido.getNome() +
+                " (" + produtoMaisVendido.getQuantidadeVendida() + " unidades)");
 
         estatisticas.add(ultimaReposicao);
         estatisticas.add(ultimaCompra);
@@ -113,8 +113,6 @@ public class JanelaAdministrador extends JFrame {
         reposicao.add(precoCaixaPainel);
         reposicao.add(adicionarReposicao);
         panel.add(reposicao);
-
-
     }
 
     private class AdicionarReposicao implements ActionListener {
