@@ -41,7 +41,7 @@ public class Main {
             Produto trentoAmargo = trento.adicionarVariacaoProduto("amargo");
 
             UsuarioAdministrador administrador =
-                    gerenciadorUsuario.adicionarAdministrador(186154, 1212, "rafael@gmail.com");
+                    gerenciadorUsuario.adicionarAdministrador(186154, 1212, "qual seu animal favorito", "mel");
             Reposicao reposicao1 = administrador.fazerReposicao();
             reposicao1.adicionarProduto(amendoim, 2);
             reposicao1.adicionarProduto(pirulito, 3);
@@ -53,8 +53,8 @@ public class Main {
             /*
              * Cadastro de outros usuários no sistema.
              */
-            Usuario usuario1 = gerenciadorUsuario.adicionarUsuario(201454, 1020, "leticia@gmail.com");
-            Usuario usuario2 = gerenciadorUsuario.adicionarUsuario(198625, 1234, "gustavo@gmail.com");
+            Usuario usuario1 = gerenciadorUsuario.adicionarUsuario(201454, 1020, "qual seu animal favorito", "mel");
+            Usuario usuario2 = gerenciadorUsuario.adicionarUsuario(198625, 1234, "qual seu animal favorito", "mel");
 
             usuario1.creditar(20.0f);
             System.out.println("Saldo do usuário com R.A. " + usuario1.getRA() + ": R$" + usuario1.getSaldo());
