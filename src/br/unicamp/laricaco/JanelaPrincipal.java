@@ -17,7 +17,6 @@ public class JanelaPrincipal extends JFrame {
     private Usuario usuario;
     private JLabel ra, saldo;
     private JCheckBox cartaoCredito, cartaoDebito, dinheiro;
-    private ArrayList<Produto> carrinho;
     private JLabel totalLabel;
 
     public JanelaPrincipal(Main main, Usuario usuario, JanelaLogin.Entrar entrar) {
@@ -28,7 +27,6 @@ public class JanelaPrincipal extends JFrame {
 
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         JPanel dados = new JPanel();
-
         dados.setLayout(new BoxLayout(dados, BoxLayout.Y_AXIS));
         ra = new JLabel("RA: " + usuario.getRA());
         dados.add(ra);
@@ -44,61 +42,33 @@ public class JanelaPrincipal extends JFrame {
         deposito.add(quantiaDeposito);
 
         JPanel checkBoxes = new JPanel(new FlowLayout());
-        CheckBoxHandler tratador = new CheckBoxHandler();
         cartaoCredito = new JCheckBox("Cartao De Credito");
         cartaoDebito = new JCheckBox("Cartao De Debito");
         dinheiro = new JCheckBox("Dinheiro");
-        cartaoCredito.addItemListener(tratador);
-        cartaoDebito.addItemListener(tratador);
-        dinheiro.addItemListener(tratador);
+        cartaoCredito.addItemListener(new CheckBoxHandler(cartaoCredito));
+        cartaoDebito.addItemListener(new CheckBoxHandler(cartaoDebito));
+        dinheiro.addItemListener(new CheckBoxHandler(dinheiro));
         checkBoxes.add(cartaoCredito);
         checkBoxes.add(cartaoDebito);
         checkBoxes.add(dinheiro);
 
         JPanel produtosPanel = new JPanel();
         produtosPanel.setLayout(new BoxLayout(produtosPanel, BoxLayout.Y_AXIS));
-        JScrollPane produtosScroll = new JScrollPane(produtosPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane produtosScroll = new JScrollPane(
+                produtosPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         produtosScroll.setPreferredSize(new Dimension(500, 300));
 
         //Para nao dar ruim com produto especial:
-        ArrayList<Produto> produtos = new ArrayList<>();
+        ArrayList<EntradaProduto> entradaProdutos = new ArrayList<>();
         for (Produto p : main.getGerenciadorEstoque().getProdutos()) {
             if (!p.isEspecial()) {
-                produtos.add(p);
+                entradaProdutos.add(new EntradaProduto(p, produtosPanel));
             } else {
-                produtos.addAll(((ProdutoEspecial) p).getVariacoes());
+                for (Produto produto : ((ProdutoEspecial) p).getVariacoes()) {
+                    entradaProdutos.add(new EntradaProduto(produto, produtosPanel));
+                }
             }
         }
-
-        ArrayList<JLabel> labels = new ArrayList<>();
-        for (Produto p : produtos) {
-
-            JLabel informacaoProduto = new JLabel(p.getNome() + " R$" + p.getPrecoVenda() +
-                    "                                    ");
-            JLabel qntEmEstoque = new JLabel("" + p.getEstoque());
-            JPanel produtoPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-            produtoPanel.add(informacaoProduto);
-            produtoPanel.add(qntEmEstoque);
-            JTextField quantidade = new JTextField(8);
-            JButton botaoCarrinho = new JButton(new ImageIcon("images/carrinho.png"));
-            botaoCarrinho.addActionListener(e -> {
-                int qnt = Integer.parseInt(quantidade.getText());
-                try {
-                    usuario.getCarrinho().adicionarProduto(p, qnt);
-                    totalLabel.setText("R$ " + Float.toString(usuario.getCarrinho().getValor()));
-                    qntEmEstoque.setText((Integer.parseInt(qntEmEstoque.getText()) - qnt) + "");
-                } catch (LariCACoException e1) {
-                    JOptionPane.showMessageDialog(this, e1.getMessage(), "Erro!", JOptionPane.ERROR_MESSAGE);
-                } finally {
-                    quantidade.setText("");
-                }
-            });
-
-            produtoPanel.add(quantidade);
-            produtoPanel.add(botaoCarrinho);
-            produtosPanel.add(produtoPanel);
-        }
-
 
         JPanel finalizar = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         finalizar.add(totalLabel);
@@ -110,7 +80,9 @@ public class JanelaPrincipal extends JFrame {
         esvaziarCarrinho.addActionListener(e -> {
             usuario.getCarrinho().esvaziarCarrinho();
             totalLabel.setText("R$ " + Float.toString(usuario.getCarrinho().getValor()));
-            //voltar quantidade do disponivel
+            for (EntradaProduto entradaProduto : entradaProdutos) {
+                entradaProduto.atualizarQntEmEstoque();
+            }
         });
 
         finalizarCompra.addActionListener(e -> {
@@ -133,14 +105,14 @@ public class JanelaPrincipal extends JFrame {
         getContentPane().add(produtosScroll);
         getContentPane().add(finalizar);
 
-        if (usuario instanceof UsuarioAdministrador) {
+        if (usuario.isAdministrador()) {
             JButton administrar = new JButton("Administrar");
-            administrar.setAlignmentX(CENTER_ALIGNMENT);
             getContentPane().add(administrar);
             administrar.addActionListener(e -> {
-                JanelaAdministrador janela = new JanelaAdministrador((UsuarioAdministrador) usuario, main.getGerenciadorEstoque());
+                JanelaAdministrador janela = new JanelaAdministrador(
+                        ((UsuarioAdministrador) usuario), main.getGerenciadorEstoque());
                 JanelaPrincipal.this.setVisible(false);
-                janela.setSize(700,500);
+                janela.pack();
                 janela.setVisible(true);
                 janela.addWindowListener(new WindowAdapter() {
                     @Override
@@ -188,8 +160,62 @@ public class JanelaPrincipal extends JFrame {
 
     class CheckBoxHandler implements ItemListener {
 
+        private final JCheckBox checkbox;
+
+        public CheckBoxHandler(JCheckBox checkBox) {
+            this.checkbox = checkBox;
+        }
+
         @Override
         public void itemStateChanged(ItemEvent e) {
+            if (dinheiro != checkbox) {
+                dinheiro.setSelected(false);
+            }
+            if (cartaoCredito != checkbox) {
+                cartaoCredito.setSelected(false);
+            }
+            if (cartaoDebito != checkbox) {
+                cartaoDebito.setSelected(false);
+            }
+        }
+    }
+
+    class EntradaProduto {
+
+        private final Produto p;
+        private JLabel qntEmEstoque;
+
+        EntradaProduto(Produto produto, JPanel produtosPanel) {
+            this.p = produto;
+            JLabel informacaoProduto = new JLabel(p.getNome() + " R$" + p.getPrecoVenda() +
+                    "                                    ");
+            qntEmEstoque = new JLabel("" + p.getEstoque());
+            JPanel produtoPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            produtoPanel.add(informacaoProduto);
+            produtoPanel.add(qntEmEstoque);
+            JTextField quantidade = new JTextField(8);
+            JButton botaoCarrinho = new JButton(new ImageIcon("images/carrinho.png"));
+            botaoCarrinho.addActionListener(e -> {
+                int qnt = Integer.parseInt(quantidade.getText());
+                try {
+                    usuario.getCarrinho().adicionarProduto(p, qnt);
+                    totalLabel.setText("R$ " + Float.toString(usuario.getCarrinho().getValor()));
+                    qntEmEstoque.setText((Integer.parseInt(qntEmEstoque.getText()) - qnt) + "");
+                } catch (LariCACoException e1) {
+                    JOptionPane.showMessageDialog(
+                            JanelaPrincipal.this, e1.getMessage(), "Erro!", JOptionPane.ERROR_MESSAGE);
+                } finally {
+                    quantidade.setText("");
+                }
+            });
+
+            produtoPanel.add(quantidade);
+            produtoPanel.add(botaoCarrinho);
+            produtosPanel.add(produtoPanel);
+        }
+
+        public void atualizarQntEmEstoque() {
+            qntEmEstoque.setText((p.getEstoque() - usuario.getCarrinho().quantidadeProduto(p)) + "");
         }
     }
 }
