@@ -1,5 +1,7 @@
 package br.unicamp.laricaco.cliente;
 
+import br.unicamp.laricaco.usuario.Usuario;
+
 import javax.swing.*;
 import java.awt.event.*;
 
