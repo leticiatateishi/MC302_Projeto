@@ -126,7 +126,6 @@ public class Usuario implements Salvavel {
         for (Transacao transacao : transacoes) {
             /* As transações serão guardadas pelo usuário, o estoque só guardará os produtos, pois são independentes
              * do usuário (transações por outro lado requerem um usuário) */
-            System.out.println(transacao.getTipo() + " " + transacao.getData().toString());
             transacao.salvar(outputStream);
         }
     }
