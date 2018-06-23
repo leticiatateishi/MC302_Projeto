@@ -3,6 +3,7 @@ package br.unicamp.laricaco;
 import br.unicamp.laricaco.estoque.GerenciadorEstoque;
 import br.unicamp.laricaco.estoque.Produto;
 import br.unicamp.laricaco.estoque.Reposicao;
+import br.unicamp.laricaco.usuario.GerenciadorUsuario;
 import br.unicamp.laricaco.usuario.UsuarioAdministrador;
 import br.unicamp.laricaco.utilidades.LariCACoException;
 
@@ -26,16 +27,24 @@ public class JanelaAdministrador extends JFrame {
 
     private UsuarioAdministrador usuario;
     private GerenciadorEstoque gerenciadorEstoque;
+    private GerenciadorUsuario gerenciadorUsuario;
 
-    public JanelaAdministrador(UsuarioAdministrador usuario, GerenciadorEstoque gerenciadorEstoque) {
+    public JanelaAdministrador(UsuarioAdministrador usuario, Main main) {
         super("Usuário administrador");
         this.usuario = usuario;
-        this.gerenciadorEstoque = gerenciadorEstoque;
+        this.gerenciadorEstoque = main.getGerenciadorEstoque();
+        this.gerenciadorUsuario = main.getGerenciadorUsuario();
 
         setPreferredSize(new Dimension(700, 500));
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         setContentPane(panel);
+
+        JPanel mudarSenha = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JButton alterarSenhaEsquecida = new JButton("Alterar senha esquecida");
+        alterarSenhaEsquecida.addActionListener(new MudarSenhaEsquecida());
+        mudarSenha.add(alterarSenhaEsquecida);
+        panel.add(mudarSenha);
 
         JPanel estatisticas = new JPanel();
         JLabel label = new JLabel("Estatísticas");
@@ -140,6 +149,8 @@ public class JanelaAdministrador extends JFrame {
                         Integer.parseInt(produtoAdicionado[1])),
                         Integer.parseInt(produtoAdicionado[2]));
             } catch (LariCACoException e) {
+                JOptionPane.showMessageDialog(
+                        JanelaAdministrador.this, e.getMessage(), "Erro!", JOptionPane.ERROR_MESSAGE);
             }
 
             nomeCampo.setText("");
@@ -162,5 +173,46 @@ public class JanelaAdministrador extends JFrame {
         } else if ((100 * f) % 100 > 75) {
             return (f - (((100 * f) % 100) / 100.0f) + 1);
         } else throw new NullPointerException("Numero inválido");
+    }
+
+    private class MudarSenhaEsquecida implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JPanel formulario = new JPanel();
+            formulario.setLayout(new BoxLayout(formulario, BoxLayout.Y_AXIS));
+
+            JPanel campoRA = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            campoRA.add(new JLabel("Registro acadêmico:"));
+            JTextField ra = new JTextField(7);
+            campoRA.add(ra);
+            formulario.add(campoRA);
+
+            JPanel campoCodigo = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            campoCodigo.add(new JLabel("Código ao administrador:"));
+            JTextField codigo = new JTextField(7);
+            campoCodigo.add(codigo);
+            formulario.add(campoCodigo);
+
+            JPanel campoPIN = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            campoPIN.add(new JLabel("Novo PIN:"));
+            JPasswordField pin = new JPasswordField(5);
+            campoPIN.add(pin);
+            formulario.add(campoPIN);
+
+            if (JOptionPane.showConfirmDialog(
+                    JanelaAdministrador.this, formulario, "Alteração de PIN", JOptionPane.OK_CANCEL_OPTION) == 0) {
+                try {
+                    gerenciadorUsuario.trocarSenha(
+                            gerenciadorUsuario.getUsuario(Integer.valueOf(ra.getText())),
+                            Integer.valueOf(codigo.getText()),
+                            Integer.valueOf(String.valueOf(pin.getPassword()))
+                    );
+                } catch (LariCACoException e1) {
+                    JOptionPane.showMessageDialog(
+                            JanelaAdministrador.this, e1.getMessage(), "Erro!", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
     }
 }

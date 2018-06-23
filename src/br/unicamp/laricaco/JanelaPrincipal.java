@@ -111,8 +111,7 @@ public class JanelaPrincipal extends JFrame {
             JButton administrar = new JButton("Administrar");
             getContentPane().add(administrar);
             administrar.addActionListener(e -> {
-                JanelaAdministrador janela = new JanelaAdministrador(
-                        ((UsuarioAdministrador) usuario), main.getGerenciadorEstoque());
+                JanelaAdministrador janela = new JanelaAdministrador(((UsuarioAdministrador) usuario), main);
                 JanelaPrincipal.this.setVisible(false);
                 janela.setVisible(true);
                 janela.addWindowListener(new WindowAdapter() {

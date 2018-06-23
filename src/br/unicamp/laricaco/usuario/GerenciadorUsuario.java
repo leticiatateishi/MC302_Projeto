@@ -1,9 +1,12 @@
 package br.unicamp.laricaco.usuario;
 
-import br.unicamp.laricaco.utilidades.*;
 import br.unicamp.laricaco.Main;
+import br.unicamp.laricaco.utilidades.LariCACoException;
+import br.unicamp.laricaco.utilidades.Salvavel;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.*;
 
 public class GerenciadorUsuario implements Salvavel {
@@ -62,6 +65,10 @@ public class GerenciadorUsuario implements Salvavel {
      * Para trocar a senha, o usuário que não tem acesso a sua conta deve colocar o seu RA e e-mail.
      */
     public int pedirTrocaSenha(Usuario usuario, String resposta) throws LariCACoException {
+        if (usuario == null) {
+            throw new LariCACoException("Usuário não encontrado!");
+        }
+
         if (!usuario.getResposta().equalsIgnoreCase(resposta)) {
             throw new LariCACoException("A resposta à pergunta secreta está incorreta!");
         }
