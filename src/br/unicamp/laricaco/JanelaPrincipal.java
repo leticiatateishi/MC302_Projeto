@@ -114,7 +114,6 @@ public class JanelaPrincipal extends JFrame {
                 JanelaAdministrador janela = new JanelaAdministrador(
                         ((UsuarioAdministrador) usuario), main.getGerenciadorEstoque());
                 JanelaPrincipal.this.setVisible(false);
-                janela.pack();
                 janela.setVisible(true);
                 janela.addWindowListener(new WindowAdapter() {
                     @Override

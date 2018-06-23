@@ -30,7 +30,7 @@ public class JanelaAdministrador extends JFrame {
         this.usuario = usuario;
         this.gerenciadorEstoque = gerenciadorEstoque;
 
-        setSize(500, 300);
+        setPreferredSize(new Dimension(700, 500));
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         setContentPane(panel);
@@ -113,6 +113,7 @@ public class JanelaAdministrador extends JFrame {
         reposicao.add(precoCaixaPainel);
         reposicao.add(adicionarReposicao);
         panel.add(reposicao);
+        pack();
     }
 
     private class AdicionarReposicao implements ActionListener {
