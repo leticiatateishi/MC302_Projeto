@@ -100,6 +100,7 @@ public class GerenciadorUsuario implements Salvavel {
         }
 
         usuario.trocarSenha(pin);
+        codigosAlteracaoSenha.remove(usuario);
     }
 
     @Override
