@@ -1,8 +1,10 @@
 package br.unicamp.laricaco;
 
-import br.unicamp.laricaco.estoque.*;
+import br.unicamp.laricaco.estoque.GerenciadorEstoque;
+import br.unicamp.laricaco.estoque.Produto;
+import br.unicamp.laricaco.estoque.Reposicao;
 import br.unicamp.laricaco.usuario.UsuarioAdministrador;
-import br.unicamp.laricaco.utilidades.*;
+import br.unicamp.laricaco.utilidades.LariCACoException;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -44,10 +46,11 @@ public class JanelaAdministrador extends JFrame {
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         estatisticasScroll.setPreferredSize(new Dimension(300, 300));
 
-        JLabel ultimaReposicao = new JLabel("Data da última reposição: " + gerenciadorEstoque.ultimaReposição());
-        JLabel ultimaCompra = new JLabel("Data da última compra: " + gerenciadorEstoque.ultimaCompra());
-        JLabel maiorEstoque = new JLabel("Produto com maior estoque: " + gerenciadorEstoque.produtoComMaiorEstoque());
-        Produto produtoMaisVendido = gerenciadorEstoque.produtoMaisVendido();
+        JLabel ultimaReposicao = new JLabel("Data da última reposição: " + gerenciadorEstoque.getDataUltimaReposicao());
+        JLabel ultimaCompra = new JLabel("Data da última compra: " + gerenciadorEstoque.getDataUltimaCompra());
+        JLabel maiorEstoque = new JLabel("Produto com maior estoque: " +
+                gerenciadorEstoque.getProdutoComMaiorEstoque().getNome());
+        Produto produtoMaisVendido = gerenciadorEstoque.getProdutoMaisVendido();
         JLabel maisVendido = new JLabel("Produto mais vendido: " + produtoMaisVendido.getNome() +
                 " (" + produtoMaisVendido.getQuantidadeVendida() + " unidades)");
 
@@ -123,7 +126,8 @@ public class JanelaAdministrador extends JFrame {
             produtoAdicionado[1] = produtosCaixaCampo.getText();
             produtoAdicionado[2] = quantidadeCaixasCampo.getText();
             produtoAdicionado[3] = precoCaixaCampo.getText();
-            produtoAdicionado[4] = String.valueOf(arredondar(Float.valueOf(precoCaixaCampo.getText()) / Float.valueOf(produtosCaixaCampo.getText())));
+            produtoAdicionado[4] = String.valueOf(arredondar(Float.valueOf(precoCaixaCampo.getText()) /
+                    Float.valueOf(produtosCaixaCampo.getText())));
 
             model.addRow(produtoAdicionado);
 
@@ -145,22 +149,18 @@ public class JanelaAdministrador extends JFrame {
         }
     }
 
-    public static float arredondar(float f){
-        if ((100*f)%100 == 0){
+    public static float arredondar(float f) {
+        if ((100 * f) % 100 == 0) {
             return f;
         }
-        if ((100*f)%100 <= 25){
-            return (f - (((100*f)%100)/100.0f) +0.25f);
-        }
-        else if ((100*f)%100 <= 50){
-            return (f - (((100*f)%100)/100.0f) +0.5f);
-        }
-        else if ((100*f)%100 <= 75){
-            return (f - (((100*f)%100)/100.0f) +0.75f);
-        }
-        else if ((100*f)%100 > 75){
-            return (f - (((100*f)%100)/100.0f) + 1);
-        }
-        else throw new NullPointerException ("Numero inválido");
+        if ((100 * f) % 100 <= 25) {
+            return (f - (((100 * f) % 100) / 100.0f) + 0.25f);
+        } else if ((100 * f) % 100 <= 50) {
+            return (f - (((100 * f) % 100) / 100.0f) + 0.5f);
+        } else if ((100 * f) % 100 <= 75) {
+            return (f - (((100 * f) % 100) / 100.0f) + 0.75f);
+        } else if ((100 * f) % 100 > 75) {
+            return (f - (((100 * f) % 100) / 100.0f) + 1);
+        } else throw new NullPointerException("Numero inválido");
     }
 }

@@ -4,7 +4,7 @@ import br.unicamp.laricaco.estoque.*;
 import br.unicamp.laricaco.usuario.GerenciadorUsuario;
 import br.unicamp.laricaco.usuario.Usuario;
 import br.unicamp.laricaco.usuario.UsuarioAdministrador;
-import br.unicamp.laricaco.utilidades.*;
+import br.unicamp.laricaco.utilidades.LariCACoException;
 
 import java.io.*;
 
@@ -13,14 +13,13 @@ public class Main {
     private GerenciadorEstoque gerenciadorEstoque;
     private GerenciadorUsuario gerenciadorUsuario;
 
-    public Main() {
+    public Main() throws IOException {
         boolean falhaCarregar = false;
         try (DataInputStream inputStream =
                      new DataInputStream(new BufferedInputStream(new FileInputStream("database.db")))) {
             gerenciadorEstoque = GerenciadorEstoque.carregar(inputStream);
             gerenciadorUsuario = GerenciadorUsuario.carregar(this, inputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (FileNotFoundException e) {
             gerenciadorEstoque = new GerenciadorEstoque();
             gerenciadorUsuario = new GerenciadorUsuario(this);
             falhaCarregar = true;
@@ -77,7 +76,7 @@ public class Main {
             Usuario usuario2 = gerenciadorUsuario.adicionarUsuario(198625, 1234, "qual seu animal favorito", "mel");
 
             usuario1.creditar(20.0f, TipoPagamento.CARTAO_CREDITO);
-            System.out.println("Saldo do usuário com R.A. " + usuario1.getRA() + ": R$" + usuario1.getSaldo());
+//            System.out.println("Saldo do usuário com R.A. " + usuario1.getRA() + ": R$" + usuario1.getSaldo());
 
             Carrinho carrinho1 = usuario1.getCarrinho();
 
@@ -99,8 +98,8 @@ public class Main {
 //            System.out.println(carrinho1);
 //            System.out.println(carrinho1.finalizarCompra());
 
-//            System.out.println("Saldo do usuário com R.A. " + usuario1.getRA() + " apos a compra: R$" + usuario1.getSaldo()
-//                    + "\n");
+//            System.out.println("Saldo do usuário com R.A. " + usuario1.getRA() + " apos a compra: R$" +
+//                    usuario1.getSaldo() + "\n");
 
             /*
              * Adicionamos uma variante do produto especial trento.
@@ -117,11 +116,12 @@ public class Main {
             carrinho.adicionarProduto(trentoAmargo, 3);
             Compra compra2 = carrinho.finalizarCompra();
 
-            System.out.println(compra2);
-            System.out.println("Saldo do usuário com R.A. " + usuario2.getRA() + " apos a compra: R$" + usuario2.getSaldo());
+//            System.out.println(compra2);
+//            System.out.println("Saldo do usuário com R.A. " + usuario2.getRA() + " apos a compra: R$" +
+//                    usuario2.getSaldo());
             usuario2.creditar(5.0f, TipoPagamento.DINHEIRO);
-            System.out.println("Saldo do usuário com R.A. " + usuario2.getRA() + " apos deposito de R$5,00: R$"
-                    + usuario2.getSaldo());
+//            System.out.println("Saldo do usuário com R.A. " + usuario2.getRA() + " apos deposito de R$5,00: R$"
+//                    + usuario2.getSaldo());
 
 
 //            System.out.println("\nProdutos apos compras e reposicoes:\n" + amendoim + pirulito + pacoca + trentoAmargo
@@ -135,7 +135,7 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Main main = new Main();
 
         JanelaLogin janela = new JanelaLogin(main);
