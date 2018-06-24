@@ -138,7 +138,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Main main = new Main();
 
-        JanelaLogin janela = new JanelaLogin(main);
+        JanelaInicial janela = new JanelaInicial(main);
         janela.pack();
         janela.setVisible(true);
     }

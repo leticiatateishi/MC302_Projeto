@@ -34,7 +34,11 @@ public class GerenciadorUsuario implements Salvavel {
         return null;
     }
 
-    public Usuario adicionarUsuario(int ra, int pin, String pergunta, String resposta) {
+    public Usuario adicionarUsuario(int ra, int pin, String pergunta, String resposta) throws LariCACoException {
+        if (pin < 0 || pin > 9999) {
+            throw new LariCACoException("Senha é inválida! Deve possuir 4 caracteres numéricos.");
+        }
+
         Usuario usuario = getUsuario(ra);
         if (usuario == null) {
             usuario = new Usuario(main, ra, pin, pergunta, resposta);

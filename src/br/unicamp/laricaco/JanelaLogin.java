@@ -1,12 +1,11 @@
 package br.unicamp.laricaco;
 
 import br.unicamp.laricaco.usuario.Usuario;
-import br.unicamp.laricaco.utilidades.*;
+import br.unicamp.laricaco.utilidades.LariCACoException;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
 
 public class JanelaLogin extends JFrame {
 
@@ -26,10 +25,12 @@ public class JanelaLogin extends JFrame {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         JLabel login = new JLabel("RA: ");
+        login.setAlignmentX(CENTER_ALIGNMENT);
         campoLogin = new JTextField(8);
         login.setLabelFor(campoLogin);
 
         JLabel senha = new JLabel("Senha: ");
+        senha.setAlignmentX(CENTER_ALIGNMENT);
         campoSenha = new JPasswordField(8);
         senha.setLabelFor(campoSenha);
 
@@ -43,6 +44,7 @@ public class JanelaLogin extends JFrame {
         JButton trocarSenha = new JButton("Esqueci PIN");
         trocarSenha.addActionListener(new EsqueciSenha());
         botoes.add(trocarSenha);
+
 
         panel.add(login);
         panel.add(campoLogin);
@@ -66,11 +68,9 @@ public class JanelaLogin extends JFrame {
             usuario = main.getGerenciadorUsuario().getUsuario(ra);
             if (usuario != null && usuario.getPin() == pin) {
                 criarJanelaPrincipal();
-            }
-            else if(usuario == null){
+            } else if (usuario == null) {
                 JOptionPane.showMessageDialog(JanelaLogin.this, "Insira Usuario", "Usuario", JOptionPane.ERROR_MESSAGE);
-            }
-            else{
+            } else {
                 JOptionPane.showMessageDialog(JanelaLogin.this, "Senha Incorreta", "Senha", JOptionPane.ERROR_MESSAGE);
                 campoSenha.setText("");
             }
@@ -111,10 +111,15 @@ public class JanelaLogin extends JFrame {
             Usuario usuario = main.getGerenciadorUsuario().getUsuario(Integer.parseInt(campoLogin.getText()));
             if (usuario != null) {
                 try {
+                    int codigo = usuario.pedirTrocaSenha(JOptionPane.showInputDialog(
+                            JanelaLogin.this,
+                            usuario.getPergunta() + "?",
+                            "Recuperação de senha",
+                            JOptionPane.INFORMATION_MESSAGE
+                    ));
                     JOptionPane.showMessageDialog(
                             JanelaLogin.this,
-                            "Mostre esse código junto com seu RA ao administrador: " +
-                                    usuario.pedirTrocaSenha(JOptionPane.showInputDialog(usuario.getPergunta() + "?")),
+                            "Mostre esse código junto com seu RA ao administrador: " + codigo,
                             "Sucesso!",
                             JOptionPane.INFORMATION_MESSAGE
                     );
@@ -125,4 +130,6 @@ public class JanelaLogin extends JFrame {
             }
         }
     }
+
+
 }
