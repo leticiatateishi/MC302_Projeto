@@ -75,7 +75,7 @@ public class Main {
             Usuario usuario1 = gerenciadorUsuario.adicionarUsuario(201454, 1020, "qual seu animal favorito", "mel");
             Usuario usuario2 = gerenciadorUsuario.adicionarUsuario(198625, 1234, "qual seu animal favorito", "mel");
 
-            usuario1.creditar(20.0f, TipoPagamento.CARTAO_CREDITO);
+            usuario1.creditar(20.0f, MetodoPagamento.CARTAO_CREDITO);
 //            System.out.println("Saldo do usuário com R.A. " + usuario1.getRA() + ": R$" + usuario1.getSaldo());
 
             Carrinho carrinho1 = usuario1.getCarrinho();
@@ -119,7 +119,7 @@ public class Main {
 //            System.out.println(compra2);
 //            System.out.println("Saldo do usuário com R.A. " + usuario2.getRA() + " apos a compra: R$" +
 //                    usuario2.getSaldo());
-            usuario2.creditar(5.0f, TipoPagamento.DINHEIRO);
+            usuario2.creditar(5.0f, MetodoPagamento.DINHEIRO);
 //            System.out.println("Saldo do usuário com R.A. " + usuario2.getRA() + " apos deposito de R$5,00: R$"
 //                    + usuario2.getSaldo());
 

@@ -53,8 +53,8 @@ public class Usuario implements Salvavel {
         transacoes.add(compra);
     }
 
-    public void creditar(float valor, TipoPagamento tipoPagamento) {
-        Credito credito = new Credito(this, new Date(), valor, tipoPagamento);
+    public void creditar(float valor, MetodoPagamento metodoPagamento) {
+        Credito credito = new Credito(this, new Date(), valor, metodoPagamento);
         /* Adicionamos a transação à lista de transações do usuário */
         transacoes.add(credito);
     }

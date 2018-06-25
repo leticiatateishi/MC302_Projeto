@@ -2,7 +2,7 @@ package br.unicamp.laricaco;
 
 import br.unicamp.laricaco.estoque.Produto;
 import br.unicamp.laricaco.estoque.ProdutoEspecial;
-import br.unicamp.laricaco.estoque.TipoPagamento;
+import br.unicamp.laricaco.estoque.MetodoPagamento;
 import br.unicamp.laricaco.usuario.Usuario;
 import br.unicamp.laricaco.usuario.UsuarioAdministrador;
 import br.unicamp.laricaco.utilidades.*;
@@ -93,7 +93,7 @@ public class JanelaPrincipal extends JFrame {
                 totalLabel.setText(("R$ 0.00"));
                 saldo.setText("Saldo: " + usuario.getSaldo());
                 if (usuario.getSaldo() < 0) {
-                    new AePlayWave("images/fiado.wav").start();
+                    new AePlayWave("music/fiado.wav").start();
                     JOptionPane.showMessageDialog(this, "Não compre fiado!", "Fiado", JOptionPane.WARNING_MESSAGE);
                 }
             } catch (LariCACoException e1) {
@@ -134,22 +134,22 @@ public class JanelaPrincipal extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            TipoPagamento tipoPagamento;
+            MetodoPagamento metodoPagamento;
 
             try {
 
                 if (dinheiro.isSelected()) {
-                    tipoPagamento = TipoPagamento.DINHEIRO;
+                    metodoPagamento = MetodoPagamento.DINHEIRO;
                 } else if (cartaoCredito.isSelected()) {
-                    tipoPagamento = TipoPagamento.CARTAO_CREDITO;
+                    metodoPagamento = MetodoPagamento.CARTAO_CREDITO;
                 } else if (cartaoDebito.isSelected()) {
-                    tipoPagamento = TipoPagamento.CARTAO_DEBITO;
+                    metodoPagamento = MetodoPagamento.CARTAO_DEBITO;
                 } else {
                     throw new LariCACoException("Escolha a forma de pagamento!");
                 }
 
                 if (!quantiaDeposito.getText().equals("")) {
-                    usuario.creditar(Float.parseFloat(quantiaDeposito.getText()), tipoPagamento);
+                    usuario.creditar(Float.parseFloat(quantiaDeposito.getText()), metodoPagamento);
                     quantiaDeposito.setText("");
                     saldo.setText("Saldo: " + usuario.getSaldo());
                 }

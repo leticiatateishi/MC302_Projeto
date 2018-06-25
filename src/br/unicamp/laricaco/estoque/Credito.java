@@ -8,16 +8,20 @@ import java.util.Date;
 public class Credito extends Transacao {
 
     private final float valor;
-    private final TipoPagamento tipoPagamento;
+    private final MetodoPagamento metodoPagamento;
 
-    public Credito(Usuario usuario, Date data, float valor, TipoPagamento tipoPagamento) {
+    public Credito(Usuario usuario, Date data, float valor, MetodoPagamento metodoPagamento) {
         super(Tipo.CREDITO, usuario, data);
         this.valor = valor;
-        this.tipoPagamento = tipoPagamento;
+        this.metodoPagamento = metodoPagamento;
     }
 
     public float getValor() {
         return valor;
+    }
+
+    public MetodoPagamento getMetodoPagamento() {
+        return metodoPagamento;
     }
 
     @Override
@@ -29,7 +33,7 @@ public class Credito extends Transacao {
     public void salvar(DataOutputStream outputStream) throws IOException {
         super.salvar(outputStream);
         outputStream.writeFloat(valor);
-        outputStream.writeInt(tipoPagamento.ordinal());
+        outputStream.writeInt(metodoPagamento.ordinal());
         outputStream.flush();
     }
 }
