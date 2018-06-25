@@ -93,6 +93,7 @@ public class JanelaPrincipal extends JFrame {
                 totalLabel.setText(("R$ 0.00"));
                 saldo.setText("Saldo: " + usuario.getSaldo());
                 if (usuario.getSaldo() < 0) {
+                    new AePlayWave("images/fiado.wav").start();
                     JOptionPane.showMessageDialog(this, "Não compre fiado!", "Fiado", JOptionPane.WARNING_MESSAGE);
                 }
             } catch (LariCACoException e1) {
@@ -131,7 +132,7 @@ public class JanelaPrincipal extends JFrame {
     class Creditar implements ActionListener {
 
         @Override
-        public void actionPerformed(ActionEvent e){
+        public void actionPerformed(ActionEvent e) {
 
             TipoPagamento tipoPagamento;
 
@@ -148,12 +149,11 @@ public class JanelaPrincipal extends JFrame {
                 }
 
                 if (!quantiaDeposito.getText().equals("")) {
-
-                     usuario.creditar(Float.parseFloat(quantiaDeposito.getText()), tipoPagamento);
-                     quantiaDeposito.setText("");
-                     saldo.setText("Saldo: " + usuario.getSaldo());
+                    usuario.creditar(Float.parseFloat(quantiaDeposito.getText()), tipoPagamento);
+                    quantiaDeposito.setText("");
+                    saldo.setText("Saldo: " + usuario.getSaldo());
                 }
-            }catch (LariCACoException ex){
+            } catch (LariCACoException ex) {
                 JOptionPane.showMessageDialog(JanelaPrincipal.this, ex.getMessage(), "Pagamento", JOptionPane.ERROR_MESSAGE);
             }
         }
