@@ -139,6 +139,7 @@ public class Main {
         Main main = new Main();
 
         JanelaInicial janela = new JanelaInicial(main);
+        janela.setLocationRelativeTo(null);
         janela.pack();
         janela.setVisible(true);
     }

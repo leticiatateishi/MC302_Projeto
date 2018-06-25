@@ -10,12 +10,14 @@ import java.awt.event.*;
 public class JanelaLogin extends JFrame {
 
     private final Main main;
+    private final JanelaInicial janelaInicial;
 
     private JTextField campoLogin;
     private JPasswordField campoSenha;
 
-    public JanelaLogin(Main main) {
+    public JanelaLogin(Main main, JanelaInicial janelaInicial) {
         super("Login");
+        this.janelaInicial = janelaInicial;
 
         this.main = main;
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE); //Nao queremos que os usuarios fechem o programa
@@ -98,7 +100,8 @@ public class JanelaLogin extends JFrame {
                     }
                     campoLogin.setText("");
                     campoSenha.setText("");
-                    JanelaLogin.this.setVisible(true);
+//                    JanelaLogin.this.setVisible(true);
+                    janelaInicial.close();
                 }
             });
         }

@@ -114,6 +114,7 @@ public class JanelaPrincipal extends JFrame {
             administrar.addActionListener(e -> {
                 JanelaAdministrador janela = new JanelaAdministrador(((UsuarioAdministrador) usuario), main);
                 JanelaPrincipal.this.setVisible(false);
+                janela.setLocationRelativeTo(null);
                 janela.setVisible(true);
                 janela.addWindowListener(new WindowAdapter() {
                     @Override
@@ -123,10 +124,8 @@ public class JanelaPrincipal extends JFrame {
                         entrar.criarJanelaPrincipal();
                     }
                 });
-
             });
         }
-
     }
 
     class Creditar implements ActionListener {

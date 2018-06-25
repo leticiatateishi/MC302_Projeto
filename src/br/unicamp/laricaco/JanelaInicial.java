@@ -40,19 +40,23 @@ public class JanelaInicial extends JFrame {
         this.setVisible(true);
     }
 
+    public void close() {
+        JanelaInicial.this.setVisible(true);
+    }
 
     class TelaLogin implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            JanelaLogin login = new JanelaLogin(main);
+            JanelaLogin login = new JanelaLogin(main, JanelaInicial.this);
             JanelaInicial.this.setVisible(false);
             login.pack();
+            login.setLocationRelativeTo(null);
             login.setVisible(true);
             login.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
                     login.dispose();
-                    JanelaInicial.this.setVisible(true);
+                    close();
                 }
             });
         }
@@ -61,14 +65,15 @@ public class JanelaInicial extends JFrame {
     class NovoUsuario implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            JanelaNovoUsuario login = new JanelaNovoUsuario(main);
-            JanelaInicial.this.setVisible(false);
-            login.pack();
-            login.setVisible(true);
-            login.addWindowListener(new WindowAdapter() {
+            JanelaNovoUsuario novoUsuario = new JanelaNovoUsuario(main);
+            JanelaInicial.this.dispose();
+            novoUsuario.setLocationRelativeTo(null);
+            novoUsuario.pack();
+            novoUsuario.setVisible(true);
+            novoUsuario.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
-                    login.dispose();
+                    novoUsuario.dispose();
                     JanelaInicial.this.setVisible(true);
                 }
             });
