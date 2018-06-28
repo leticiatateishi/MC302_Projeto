@@ -90,6 +90,11 @@ public class JanelaNovoUsuario extends JFrame {
                 );
                 JOptionPane.showMessageDialog(JanelaNovoUsuario.this, "Usuário criado com sucesso!", "Parabéns!",
                         JOptionPane.INFORMATION_MESSAGE);
+                campoLogin.setText("");
+                campoPergunta.setText("");
+                campoResposta.setText("");
+                campoSenha.setText("");
+                campoSenha2.setText("");
             } catch (Exception e1) {
                 JOptionPane.showMessageDialog(JanelaNovoUsuario.this, e1.getMessage(), "Erro!",
                         JOptionPane.ERROR_MESSAGE);
