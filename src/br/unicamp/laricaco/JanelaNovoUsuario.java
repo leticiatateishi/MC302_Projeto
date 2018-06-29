@@ -6,17 +6,20 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 
 public class JanelaNovoUsuario extends JFrame {
 
     private final Main main;
     private JTextField campoLogin, campoPergunta, campoResposta;
     private JPasswordField campoSenha, campoSenha2;
+    private JanelaInicial janelaInicial;
 
-    public JanelaNovoUsuario(Main main) {
+    public JanelaNovoUsuario(Main main, JanelaInicial janelaInicial) {
         super("Criar Usuario");
 
         this.main = main;
+        this.janelaInicial = janelaInicial;
 
         JPanel novoUsuario = new JPanel();
         novoUsuario.setLayout(new BoxLayout(novoUsuario, BoxLayout.Y_AXIS));
@@ -95,6 +98,8 @@ public class JanelaNovoUsuario extends JFrame {
                 campoResposta.setText("");
                 campoSenha.setText("");
                 campoSenha2.setText("");
+                janelaInicial.close();
+                JanelaNovoUsuario.this.dispose();
             } catch (Exception e1) {
                 JOptionPane.showMessageDialog(JanelaNovoUsuario.this, e1.getMessage(), "Erro!",
                         JOptionPane.ERROR_MESSAGE);

@@ -65,7 +65,7 @@ public class JanelaInicial extends JFrame {
     class NovoUsuario implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            JanelaNovoUsuario novoUsuario = new JanelaNovoUsuario(main);
+            JanelaNovoUsuario novoUsuario = new JanelaNovoUsuario(main, JanelaInicial.this);
             JanelaInicial.this.dispose();
             novoUsuario.setLocationRelativeTo(null);
             novoUsuario.pack();
